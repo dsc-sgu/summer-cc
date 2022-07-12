@@ -1,0 +1,9 @@
+[submodule "Dependencies/raylib"]
+	path = Dependencies/raylib
+	url = https://github.com/GDSC-Saratov/raylib.git
+[submodule "Dependencies/raygui"]
+	path = Dependencies/raygui
+	url = https://github.com/GDSC-Saratov/raygui.git
+[submodule "Dependencies/raylib-ext"]
+	path = Dependencies/raylib-ext
+	url = https://github.com/GDSC-Saratov/raylib-ext.git
