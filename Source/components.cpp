@@ -1,29 +1,46 @@
 #include"components.h"
 #include"raylib.h"
 #include<vector>
+
 typedef int Entity_id;
 
-std::string Player_control::get_component_type()
+std::string _Player_control::get_component_type()
 {
-    return std::type_index(typeid(Player_control)).name();
+
+    return std::type_index(typeid(_Player_control)).name();
 }
-void Player_control::Update(float dt)
+
+std::string _Transform::get_component_type()
 {
+
+    return std::type_index(typeid(_Transform)).name();
+}
+
+
+void _Transform::Update(float dt, int parent_id, Storage &storage)
+{
+    
+}
+
+void _Player_control::Update(float dt, int parent_id, Storage &storage)
+{
+    auto cur_transform = storage.entitys[parent_id].getComponent<_Transform>();
+    
     if (IsKeyDown(KEY_W))
     {
-        this->y -= speed*dt;
+        cur_transform->pos.y -= speed*dt;
     }
     else if (IsKeyDown(KEY_S))
     {
-        this->y += speed*dt;
+        cur_transform->pos.y += speed*dt;
     }
     
     if (IsKeyDown(KEY_A))
     {
-        this->x -= speed*dt;
+        cur_transform->pos.x -= speed*dt;
     }
     else if (IsKeyDown(KEY_D))
     {
-        this->x += speed*dt;
+        cur_transform->pos.x += speed*dt;
     }
 }
