@@ -7,3 +7,6 @@
 [submodule "Dependencies/raylib-ext"]
 	path = Dependencies/raylib-ext
 	url = https://github.com/GDSC-Saratov/raylib-ext.git
+[submodule "Dependencies/json"]
+	path = Dependencies/json
+	url = https://github.com/GDSC-Saratov/json.git
