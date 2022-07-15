@@ -10,15 +10,17 @@ int main()
 
     const int screenWidth = 640;
     const int screenHeight = 480;
+    InitWindow(screenWidth, screenHeight, "GDSC: Creative Coding");
+    SetTargetFPS(60);
 
     storage.entitys.push_back(Entity());
     _Player_control *player_control = new _Player_control();
     _Transform *trnsf = new _Transform();
+    _Sprite *spr = new _Sprite("Asssets/Textures/King_stay.png");
     player_control->speed = 100;
     storage.entitys[0].components.push_back(player_control);
     storage.entitys[0].components.push_back(trnsf);
-    InitWindow(screenWidth, screenHeight, "GDSC: Creative Coding");
-    SetTargetFPS(60);
+    storage.entitys[0].components.push_back(spr);
 
     while (!WindowShouldClose())
     {
@@ -31,7 +33,8 @@ int main()
 
                     storage.entitys[i].components[j]->Update(GetFrameTime(),storage.entitys[i].id,storage);
                     auto t = storage.entitys[i].getComponent<_Transform>();
-                    DrawRectangle(t->pos.x, t->pos.y, 10, 10, GREEN);
+                    auto s = storage.entitys[i].getComponent<_Sprite>();
+                    DrawTexture(s->texture, t->pos.x, t->pos.y, WHITE);
                 }   
             }
         }

@@ -1,8 +1,8 @@
-#include<vector>
-#include<string>
-#include<typeinfo>
-#include<iostream>
-#include<typeindex>
+#include <vector>
+#include <string>
+#include <typeinfo>
+#include <iostream>
+#include <typeindex>
 #include <raylib-ext.hpp>
 typedef int Entity_id;
 
@@ -12,7 +12,7 @@ class Component
 {
 public:
 
-    virtual void Update(float dt, int parent_id, Storage &storage) = 0;
+    virtual void Update(float dt, Entity_id parent_id, Storage &storage) = 0;
     virtual std::string get_component_type() = 0;
 };
 
@@ -48,15 +48,18 @@ class _Sprite : public Component
 {
 public:
 
-    void Update(float dt, int parent_id, Storage &storage) override;
-    std::string path; 
+    _Sprite(const std::string& path);
+    void Update(float dt, Entity_id parent_id, Storage &storage) override;
+    std::string get_component_type();
+    Texture2D texture;
+    Image image;
 };
 
 class _Transform : public Component 
 {
 public:
 
-    void Update(float dt, int parent_id, Storage &storage) override;
+    void Update(float dt, Entity_id parent_id, Storage &storage) override;
     std::string get_component_type();
     Vector3 pos;
     float angle; 
@@ -66,7 +69,7 @@ class _Player_control : public Component
 {
 public:
 
-    void Update(float dt, int parent_id, Storage &storage) override;
+    void Update(float dt, Entity_id parent_id, Storage &storage) override;
     std::string get_component_type();
     int speed;
 };

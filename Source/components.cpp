@@ -1,6 +1,4 @@
 #include"components.h"
-#include"raylib.h"
-#include<vector>
 
 typedef int Entity_id;
 
@@ -17,9 +15,27 @@ std::string _Transform::get_component_type()
 }
 
 
-void _Transform::Update(float dt, int parent_id, Storage &storage)
+void _Transform::Update(float dt, Entity_id parent_id, Storage &storage)
 {
     
+}
+
+void _Sprite::Update(float dt, Entity_id parent_id, Storage &storage)
+{
+
+}
+
+std::string _Sprite::get_component_type()
+{
+
+    return std::type_index(typeid(_Sprite)).name();
+}
+
+_Sprite::_Sprite(const std::string& path)
+{
+    
+    image = LoadImage(path);
+    texture = LoadTextureFromImage(image);
 }
 
 void _Player_control::Update(float dt, int parent_id, Storage &storage)
