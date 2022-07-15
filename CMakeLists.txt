@@ -11,3 +11,4 @@ set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT G
 add_subdirectory (Dependencies)
 
 target_link_libraries (Game LINK_PRIVATE raylib-ext)
+target_link_libraries (Game LINK_PRIVATE JSON)
