@@ -2,11 +2,7 @@
 
 typedef int Entity_id;
 
-Entity::Entity()
-{
-    static unsigned count = 0;
-    this->id = count++;
-}
+
 
 std::string _Player_control::get_component_type()
 {
@@ -35,6 +31,9 @@ _Sprite::_Sprite(const std::string &path)
     image = LoadImage(path);
     texture = LoadTextureFromImage(image);
 }
+
+_Sprite::_Sprite()
+{}
 
 void _Player_control::Update(float dt, int parent_id, Storage &storage)
 {
