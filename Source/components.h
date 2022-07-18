@@ -11,7 +11,6 @@ class Storage;
 class Component 
 {
 public:
-
     virtual void Update(float dt, Entity_id parent_id, Storage &storage) = 0;
     virtual std::string get_component_type() = 0;
 };
@@ -19,18 +18,21 @@ public:
 class Entity 
 {
 public:
-
     Entity_id id;
-    std::vector<Component*> components;
-    template <typename T> 
-    T* getComponent()
-    {
+    std::vector<Component *> components;
 
-        for (int i = 0; i < components.size(); i++) {
-            
-            if(std::type_index(typeid(T)).name() == components[i]->get_component_type()) {
-                return (T*) components[i];
-            } 
+    Entity();
+
+    template <typename T> 
+    T *
+    getComponent()
+    {
+        for (int i = 0; i < components.size(); i++)
+        {
+            if (std::type_index(typeid(T)).name() == components[i]->get_component_type())
+            {
+                return (T *) components[i];
+            }
         }
 
         return nullptr;
@@ -40,17 +42,15 @@ public:
 class Storage
 {
 public:
-
-    std::vector<Entity>entitys;
+    std::vector<Entity> entities;
 };
 
 class _Sprite : public Component 
 {
 public:
-
     _Sprite(const std::string& path);
     void Update(float dt, Entity_id parent_id, Storage &storage) override;
-    std::string get_component_type();
+    std::string get_component_type() override;
     Texture2D texture;
     Image image;
 };
@@ -58,9 +58,8 @@ public:
 class _Transform : public Component 
 {
 public:
-
     void Update(float dt, Entity_id parent_id, Storage &storage) override;
-    std::string get_component_type();
+    std::string get_component_type() override;
     Vector3 pos;
     float angle; 
 };
@@ -68,8 +67,7 @@ public:
 class _Player_control : public Component 
 {
 public:
-
     void Update(float dt, Entity_id parent_id, Storage &storage) override;
-    std::string get_component_type();
+    std::string get_component_type() override;
     int speed;
 };
