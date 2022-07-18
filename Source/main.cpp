@@ -1,15 +1,15 @@
 #define RAYEXT_IMPLEMENTATION
 #include <raylib-ext.hpp>
-#include "components.h"
+//#include "components.h"
+#include "json_loader.h"
+#include "render.h"
 #include <iostream>
-#include<algorithm>
+
+
+
+
 Storage storage;
 
-struct Viewport
-{
-    float left, right;
-    float bottom, top;
-};
 
 Vector2
 screen_to_local(Viewport &viewport, Vector2 screen_size, Vector2 point)
@@ -36,13 +36,6 @@ set_viewport(Viewport &viewport, Vector2 screen_size, Rectangle rect)
         p1.y,
     };
 }
-struct {
-    bool operator()(Entity * a, Entity * b) const { 
-        int x = a->getComponent<_Transform>()->pos.z;
-        int y = b->getComponent<_Transform>()->pos.z;
-        return x < y; 
-    }
-} customLess;
 
 
 void z_order(Storage strg, bool ord = true)
@@ -65,25 +58,20 @@ main()
     Viewport viewport = {0, screen_size.x, screen_size.y, 0};
     set_viewport(viewport, screen_size, { 0, 0, screen_size.x, screen_size.y });
 
+    storage.entities.push_back(Entity());
+    _Transform *trnsf1 = new _Transform();
+    _Sprite *spr1 = new _Sprite("Asssets/Textures/bg.png");
+    storage.entities[0].components.push_back(trnsf1);
+    storage.entities[0].components.push_back(spr1);
 
-storage.entities.push_back(Entity());
+    storage.entities.push_back(Entity());
     _Player_control *player_control = new _Player_control();
     _Transform *trnsf = new _Transform();
     _Sprite *spr = new _Sprite("Asssets/Textures/King_stay.png");
     player_control->speed = 100;
-    storage.entities[0].components.push_back(player_control);
-    storage.entities[0].components.push_back(trnsf);
-    storage.entities[0].components.push_back(spr);
-
-
-
-
-
-    storage.entities.push_back(Entity());
-    _Transform *trnsf1 = new _Transform();
-    _Sprite *spr1 = new _Sprite("Asssets/Textures/bg.png");
-    storage.entities[1].components.push_back(trnsf1);
-    storage.entities[1].components.push_back(spr1);
+    storage.entities[1].components.push_back(player_control);
+    storage.entities[1].components.push_back(trnsf);
+    storage.entities[1].components.push_back(spr);
 
     
     while (!WindowShouldClose())
@@ -91,7 +79,7 @@ storage.entities.push_back(Entity());
         BeginDrawing();
         {
             ClearBackground(BLACK);
-                z_order(storage);
+
             for (int i = 0; i < storage.entities.size(); i++)
             {
                 for (int j = 0; j < storage.entities[i].components.size(); j++)
@@ -103,7 +91,6 @@ storage.entities.push_back(Entity());
                     DrawTexture(s->texture, new_pos.x, new_pos.y - s->texture.height, WHITE);
                 }
             }
-
             if (IsKeyDown(KEY_LEFT))
             {
                 viewport.left += 1;
