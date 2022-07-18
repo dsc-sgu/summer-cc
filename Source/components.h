@@ -1,9 +1,11 @@
+#pragma once
 #include <vector>
 #include <string>
 #include <typeinfo>
 #include <iostream>
 #include <typeindex>
 #include <raylib-ext.hpp>
+
 typedef int Entity_id;
 
 class Storage;

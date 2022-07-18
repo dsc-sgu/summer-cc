@@ -31,7 +31,6 @@ Storage load_lvl(std::string path) {
             }
     }
 
-
     lvl_file.close();
 
     return new_lvl;
