@@ -1,6 +1,25 @@
 {
-	"count":1,
+	"count":2,
 	"entities": [
+		[
+			{
+				"type": "Transform",
+				"angle": 0,
+				"pos": {
+					"x": 0,
+					"y": 0,
+					"z": 0
+				}
+			},
+			{
+				"type": "PlayerControl",
+				"speed": 1000
+			},
+			{
+				"type": "Sprite",
+				"path": "Asssets/Textures/King_stay.png"
+			}
+		],
 		[
 			{
 				"type": "Transform",

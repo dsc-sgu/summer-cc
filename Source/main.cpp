@@ -12,8 +12,10 @@ Storage load_lvl(std::string path) {
     Storage new_lvl;
     json lvl_json;
     std::ifstream lvl_file(path);
-    
+    lvl_file >> lvl_json;
     int n = lvl_json["count"];
+
+    
 
     for (int i = 0; i < n; i++) {
         new_lvl.entitys.push_back(Entity());
@@ -63,7 +65,7 @@ int main()
     storage.entitys[0].components.push_back(spr);*/
 
     storage = load_lvl("Asssets/Lvls/test.json");
-
+    
     while (!WindowShouldClose())
     {
         BeginDrawing();
@@ -72,7 +74,7 @@ int main()
 
             for(int i = 0; i<storage.entitys.size(); i++){
                 for(int j = 0; j<storage.entitys[i].components.size(); j++){
-
+                    std::cout << i << std::endl;
                     storage.entitys[i].components[j]->Update(GetFrameTime(),storage.entitys[i].id,storage);
                     auto t = storage.entitys[i].getComponent<_Transform>();
                     auto s = storage.entitys[i].getComponent<_Sprite>();
