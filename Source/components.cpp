@@ -2,8 +2,6 @@
 
 typedef int Entity_id;
 
-
-
 std::string _Player_control::get_component_type()
 {
     return std::type_index(typeid(_Player_control)).name();
@@ -13,7 +11,6 @@ std::string _Transform::get_component_type()
 {
     return std::type_index(typeid(_Transform)).name();
 }
-
 
 void _Transform::Update(float dt, Entity_id parent_id, Storage &storage)
 {}

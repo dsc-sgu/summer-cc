@@ -9,8 +9,6 @@ Storage load_lvl(std::string path) {
     lvl_file >> lvl_json;
     int n = lvl_json["count"];
 
-
-
     for (int i = 0; i < n; i++) {
         new_lvl.entities.push_back(Entity());
         new_lvl.entities[i].id = i;
@@ -32,7 +30,6 @@ Storage load_lvl(std::string path) {
                 new_lvl.entities[i].components.push_back(sprite);
             }
     }
-
 
     lvl_file.close();
 

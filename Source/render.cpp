@@ -1,4 +1,5 @@
 #include "render.h"
+#include "components.h"
 
 Vector2
 screen_to_local(Viewport& viewport, Vector2 screen_size, Vector2 point)
@@ -24,4 +25,21 @@ set_viewport(Viewport& viewport, Vector2 screen_size, Rectangle rect)
         p0.y,
         p1.y,
     };
+}
+
+std::vector<Entity *>
+create_draw_order(std::vector<Entity> &entities)
+{
+    std::vector<Entity *> draw_queue;
+    for (int i = 0; i < entities.size(); ++i)
+    {
+        draw_queue.push_back(&(entities[i]));
+    }
+
+    std::sort(draw_queue.begin(), draw_queue.end(),
+        [](Entity *a, Entity *b) {
+            return a->getComponent<_Transform>()->pos.z < b->getComponent<_Transform>()->pos.z;
+    });
+
+    return draw_queue;
 }
