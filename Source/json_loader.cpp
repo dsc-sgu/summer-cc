@@ -12,24 +12,24 @@ Storage load_lvl(std::string path) {
 
 
     for (int i = 0; i < n; i++) {
-        new_lvl.entitys.push_back(Entity());
-        new_lvl.entitys[0].id = i;
+        new_lvl.entities.push_back(Entity());
+        new_lvl.entities[i].id = i;
         auto entity = lvl_json["entities"][i];
         for (int j = 0; j < 3; j++)
             if (entity[j]["type"] == "Transform") {
                 _Transform* transform = new _Transform();
                 transform->angle = entity[j]["angle"];
                 transform->pos = Vector3{ entity[j]["pos"]["x"], entity[j]["pos"]["y"], entity[j]["pos"]["z"] };
-                new_lvl.entitys[i].components.push_back(transform);
+                new_lvl.entities[i].components.push_back(transform);
             }
             else if (entity[j]["type"] == "PlayerControl") {
                 _Player_control* player_control = new _Player_control();
                 player_control->speed = entity[j]["speed"];
-                new_lvl.entitys[i].components.push_back(player_control);
+                new_lvl.entities[i].components.push_back(player_control);
             }
             else if (entity[j]["type"] == "Sprite") {
                 _Sprite* sprite = new _Sprite(entity[j]["path"]);
-                new_lvl.entitys[i].components.push_back(sprite);
+                new_lvl.entities[i].components.push_back(sprite);
             }
     }
 

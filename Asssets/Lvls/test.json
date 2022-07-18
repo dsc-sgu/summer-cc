@@ -13,7 +13,7 @@
 			},
 			{
 				"type": "PlayerControl",
-				"speed": 1000
+				"speed": 100
 			},
 			{
 				"type": "Sprite",
@@ -31,12 +31,8 @@
 				}
 			},
 			{
-				"type": "PlayerControl",
-				"speed": 100
-			},
-			{
 				"type": "Sprite",
-				"path": "Asssets/Textures/King_stay.png"
+				"path": "Asssets/Textures/bg.png"
 			}
 		]
 	]
