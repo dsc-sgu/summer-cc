@@ -49,6 +49,7 @@ class _Sprite : public Component
 public:
 
     _Sprite(const std::string& path);
+    _Sprite();
     void Update(float dt, Entity_id parent_id, Storage &storage) override;
     std::string get_component_type();
     Texture2D texture;
@@ -73,3 +74,21 @@ public:
     std::string get_component_type();
     int speed;
 };
+/*
+class _GUI : public Component
+{
+public:
+    void Update(float dt, Entity_id parent_id, Storage& storage) override;
+    std::string get_component_type();
+};
+
+class _Label : public Component
+{
+public:
+    void Update(float dt, Entity_id parent_id, Storage& storage) override;
+    std::string get_component_type();
+    std::string text;
+    Color modulate;
+    int font_size;
+};
+*/

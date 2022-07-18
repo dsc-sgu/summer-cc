@@ -38,6 +38,9 @@ _Sprite::_Sprite(const std::string& path)
     texture = LoadTextureFromImage(image);
 }
 
+_Sprite::_Sprite()
+{}
+
 void _Player_control::Update(float dt, int parent_id, Storage &storage)
 {
     auto cur_transform = storage.entitys[parent_id].getComponent<_Transform>();
