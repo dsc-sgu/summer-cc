@@ -1,38 +1,29 @@
 {
-    "count" : 2,
     "entities": [
         [
             {
                 "type": "Transform",
                 "angle": 0,
-                "pos": {
-                    "x": 0,
-                    "y": 0,
-                    "z": 0
-                }
-            },
-            {
-                "type": "PlayerControl",
-                "speed": 100
+                "pos": [0, 0, -99999]
             },
             {
                 "type": "Sprite",
-                "path": "Asssets/Textures/King_stay.png"
+                "path": "Asssets/Textures/bg.png"
             }
         ],
         [
             {
                 "type": "Transform",
                 "angle": 0,
-                "pos": {
-                    "x": 0,
-                    "y": 0,
-                    "z": -99999
-                }
+                "pos": [0, 0, 0]
+            },
+            {
+                "type": "PlayerControl",
+                "speed": 200
             },
             {
                 "type": "Sprite",
-                "path": "Asssets/Textures/bg.png"
+                "path": "Asssets/Textures/King_stay.png"
             }
         ]
     ]

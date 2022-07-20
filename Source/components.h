@@ -22,7 +22,8 @@ class Entity
 public:
     Entity_id id;
     std::vector<Component *> components;
-    static unsigned count;
+
+    Entity();
 
     template <typename T> 
     T *

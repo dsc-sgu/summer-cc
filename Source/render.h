@@ -9,7 +9,7 @@ struct Viewport
 };
 
 Vector2
-screen_to_local(Viewport& viewport, Vector2 screen_size, Vector2 point);
+global_to_screen(Viewport& viewport, Vector2 screen_size, Vector2 point);
 
 void
 set_viewport(Viewport& viewport, Vector2 screen_size, Rectangle rect);

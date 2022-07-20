@@ -2,7 +2,7 @@
 #include "components.h"
 
 Vector2
-screen_to_local(Viewport& viewport, Vector2 screen_size, Vector2 point)
+global_to_screen(Viewport& viewport, Vector2 screen_size, Vector2 point)
 {
     Vector2 d = {
         viewport.right - viewport.left,
@@ -17,8 +17,8 @@ screen_to_local(Viewport& viewport, Vector2 screen_size, Vector2 point)
 void
 set_viewport(Viewport& viewport, Vector2 screen_size, Rectangle rect)
 {
-    Vector2 p0 = screen_to_local(viewport, screen_size, Vector2{ rect.x, rect.y });
-    Vector2 p1 = screen_to_local(viewport, screen_size, Vector2{ rect.x + rect.width, rect.y + rect.height });
+    Vector2 p0 = global_to_screen(viewport, screen_size, Vector2{ rect.x, rect.y });
+    Vector2 p1 = global_to_screen(viewport, screen_size, Vector2{ rect.x + rect.width, rect.y + rect.height });
     viewport = Viewport{
         p0.x,
         p1.x,
@@ -38,7 +38,9 @@ create_draw_order(std::vector<Entity> &entities)
 
     std::sort(draw_queue.begin(), draw_queue.end(),
         [](Entity *a, Entity *b) {
-            return a->getComponent<_Transform>()->pos.z < b->getComponent<_Transform>()->pos.z;
+            float az = a->getComponent<_Transform>()->pos.z;
+            float bz = b->getComponent<_Transform>()->pos.z;
+            return az < bz;
     });
 
     return draw_queue;
