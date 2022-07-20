@@ -12,12 +12,12 @@ main()
     InitWindow(screen_size.x, screen_size.y, "Creative Coding: Platformer");
     SetTargetFPS(60);
 
-    Viewport viewport = {0, screen_size.x, screen_size.y, 0};
+    plat::Viewport viewport = {0, screen_size.x, screen_size.y, 0};
     set_viewport(viewport, screen_size, { 0, 0, screen_size.x, screen_size.y });
 
-    Storage storage = load_lvl("Asssets/Scenes/default.json");
+    plat::Storage storage = load_lvl("Asssets/Scenes/default.json");
 
-    std::vector<Entity *> draw_queue = create_draw_order(storage.entities);
+    std::vector<plat::Entity *> draw_queue = create_draw_order(storage.entities);
 
     while (!WindowShouldClose())
     {
@@ -35,9 +35,9 @@ main()
         {
             for(int j = 0; j < draw_queue[i]->components.size(); ++j)
             {
-                _Transform *transform = draw_queue[i]->getComponent<_Transform>();
+                plat::Transform *transform = draw_queue[i]->getComponent<plat::Transform>();
                 Vector2 screen_pos = global_to_screen(viewport, screen_size, { transform->pos.x, transform->pos.y });
-                Texture texture = draw_queue[i]->getComponent<_Sprite>()->texture;
+                Texture texture = draw_queue[i]->getComponent<plat::Sprite>()->texture;
                 screen_pos.y -= texture.height * transform->scale;
                 DrawTextureEx(texture, screen_pos, transform->angle, transform->scale, WHITE);
             }

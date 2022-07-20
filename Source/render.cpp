@@ -1,6 +1,8 @@
 #include "render.h"
 #include "components.h"
 
+namespace plat {
+
 Vector2
 global_to_screen(Viewport& viewport, Vector2 screen_size, Vector2 point)
 {
@@ -38,10 +40,12 @@ create_draw_order(std::vector<Entity> &entities)
 
     std::sort(draw_queue.begin(), draw_queue.end(),
         [](Entity *a, Entity *b) {
-            float az = a->getComponent<_Transform>()->pos.z;
-            float bz = b->getComponent<_Transform>()->pos.z;
+            float az = a->getComponent<Transform>()->pos.z;
+            float bz = b->getComponent<Transform>()->pos.z;
             return az < bz;
     });
 
     return draw_queue;
+}
+
 }

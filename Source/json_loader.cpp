@@ -2,22 +2,22 @@
 
 using json = nlohmann::json;
 
-Storage
+plat::Storage
 load_lvl(std::string path)
 {
-    Storage new_lvl;
+    plat::Storage new_lvl;
     std::ifstream lvl_file(path);
     json lvl_json;
     lvl_file >> lvl_json;
 
     for (auto &entity : lvl_json["entities"])
     {
-        new_lvl.entities.push_back(Entity());
+        new_lvl.entities.push_back(plat::Entity());
         for (auto &component : entity)
         {
             if (component["type"] == "Transform")
             {
-                _Transform *transform = new _Transform();
+                plat::Transform *transform = new plat::Transform();
                 transform->angle = component["angle"];
                 transform->pos = (Vector3) {
                     component["pos"][0],
@@ -29,14 +29,14 @@ load_lvl(std::string path)
             }
             else if (component["type"] == "PlayerControl")
             {
-                _Player_control *player_control = new _Player_control();
+                plat::Player_control *player_control = new plat::Player_control();
                 player_control->speed = component["speed"];
                 new_lvl.entities.back().components.push_back(player_control);
             }
             else if (component["type"] == "Sprite")
             {
                 new_lvl.entities.back().components.push_back(
-                    new _Sprite(std::string(component["path"]))
+                    new plat::Sprite(std::string(component["path"]))
                 );
             }
         }

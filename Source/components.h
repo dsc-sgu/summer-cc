@@ -6,6 +6,8 @@
 #include <typeindex>
 #include <raylib-ext.hpp>
 
+namespace plat {
+
 typedef int Entity_id;
 
 class Storage;
@@ -47,19 +49,18 @@ public:
     std::vector<Entity> entities;
 };
 
-class _Sprite : public Component 
+class Sprite : public Component 
 {
 public:
     Texture2D texture;
     Image image;
 
-    _Sprite(const std::string& path);
-    _Sprite();
-    void Update(float dt, Entity_id parent_id, Storage &storage) override;
+    Sprite(const std::string& path);
     std::string get_component_type() override;
+    void Update(float dt, Entity_id parent_id, Storage &storage) override;
 };
 
-class _Transform : public Component 
+class Transform : public Component 
 {
 public:
     Vector3 pos;
@@ -70,7 +71,7 @@ public:
     std::string get_component_type() override;
 };
 
-class _Player_control : public Component 
+class Player_control : public Component 
 {
 public:
     int speed;
@@ -78,6 +79,9 @@ public:
     void Update(float dt, Entity_id parent_id, Storage &storage) override;
     std::string get_component_type() override;
 };
+
+} // namespace plat
+
 /*
 class _GUI : public Component
 {

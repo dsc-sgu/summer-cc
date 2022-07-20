@@ -1,6 +1,6 @@
 #include "components.h"
 
-typedef int Entity_id;
+namespace plat {
 
 Entity::Entity()
 {
@@ -9,44 +9,41 @@ Entity::Entity()
 }
 
 std::string
-_Player_control::get_component_type()
+Transform::get_component_type()
 {
-    return std::type_index(typeid(_Player_control)).name();
-}
-
-std::string
-_Transform::get_component_type()
-{
-    return std::type_index(typeid(_Transform)).name();
+    return std::type_index(typeid(Transform)).name();
 }
 
 void
-_Transform::Update(float dt, Entity_id parent_id, Storage &storage)
+Transform::Update(float dt, Entity_id parent_id, Storage &storage)
 {}
 
-void
-_Sprite::Update(float dt, Entity_id parent_id, Storage &storage)
-{}
-
-std::string
-_Sprite::get_component_type()
-{
-    return std::type_index(typeid(_Sprite)).name();
-}
-
-_Sprite::_Sprite(const std::string &path)
+Sprite::Sprite(const std::string &path)
 {
     image = LoadImage(path);
     texture = LoadTextureFromImage(image);
 }
 
-_Sprite::_Sprite()
-{}
+std::string
+Sprite::get_component_type()
+{
+    return std::type_index(typeid(Sprite)).name();
+}
 
 void
-_Player_control::Update(float dt, int parent_id, Storage &storage)
+Sprite::Update(float dt, Entity_id parent_id, Storage &storage)
+{}
+
+std::string
+Player_control::get_component_type()
 {
-    auto cur_transform = storage.entities[parent_id].getComponent<_Transform>();
+    return std::type_index(typeid(Player_control)).name();
+}
+
+void
+Player_control::Update(float dt, int parent_id, Storage &storage)
+{
+    auto cur_transform = storage.entities[parent_id].getComponent<Transform>();
 
     if (IsKeyDown(KEY_W))
     {
@@ -65,4 +62,6 @@ _Player_control::Update(float dt, int parent_id, Storage &storage)
     {
         cur_transform->pos.x += speed * dt;
     }
+}
+
 }
