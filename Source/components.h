@@ -50,29 +50,33 @@ public:
 class _Sprite : public Component 
 {
 public:
+    Texture2D texture;
+    Image image;
+
     _Sprite(const std::string& path);
     _Sprite();
     void Update(float dt, Entity_id parent_id, Storage &storage) override;
     std::string get_component_type() override;
-    Texture2D texture;
-    Image image;
 };
 
 class _Transform : public Component 
 {
 public:
+    Vector3 pos;
+    float scale;
+    float angle; 
+
     void Update(float dt, Entity_id parent_id, Storage &storage) override;
     std::string get_component_type() override;
-    Vector3 pos;
-    float angle; 
 };
 
 class _Player_control : public Component 
 {
 public:
+    int speed;
+
     void Update(float dt, Entity_id parent_id, Storage &storage) override;
     std::string get_component_type() override;
-    int speed;
 };
 /*
 class _GUI : public Component

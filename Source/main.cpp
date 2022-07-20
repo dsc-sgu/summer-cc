@@ -8,7 +8,7 @@
 int
 main()
 {
-    const Vector2 screen_size { 640, 480 };
+    const Vector2 screen_size { 720, 480 };
     InitWindow(screen_size.x, screen_size.y, "Creative Coding: Platformer");
     SetTargetFPS(60);
 
@@ -37,8 +37,9 @@ main()
             {
                 _Transform *transform = draw_queue[i]->getComponent<_Transform>();
                 Vector2 screen_pos = global_to_screen(viewport, screen_size, { transform->pos.x, transform->pos.y });
-                _Sprite *sprite = draw_queue[i]->getComponent<_Sprite>();
-                DrawTexture(sprite->texture, screen_pos.x, screen_pos.y-sprite->texture.height, WHITE);
+                Texture texture = draw_queue[i]->getComponent<_Sprite>()->texture;
+                screen_pos.y -= texture.height * transform->scale;
+                DrawTextureEx(texture, screen_pos, transform->angle, transform->scale, WHITE);
             }
         }
         if (IsKeyDown(KEY_LEFT))

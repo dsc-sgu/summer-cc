@@ -4,7 +4,8 @@
             {
                 "type": "Transform",
                 "angle": 0,
-                "pos": [0, 0, -99999]
+                "pos": [0, 0, -99999],
+                "scale": 1
             },
             {
                 "type": "Sprite",
@@ -15,7 +16,8 @@
             {
                 "type": "Transform",
                 "angle": 0,
-                "pos": [0, 0, 0]
+                "pos": [0, 0, 0],
+                "scale": 2
             },
             {
                 "type": "PlayerControl",
