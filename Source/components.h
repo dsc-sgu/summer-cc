@@ -15,7 +15,7 @@ class Storage;
 class Component 
 {
 public:
-    virtual void Update(float dt, Entity_id parent_id, Storage &storage) = 0;
+    virtual void update(float dt, Entity_id parent_id, Storage &storage) = 0;
     virtual std::string get_component_type() = 0;
 };
 
@@ -47,6 +47,7 @@ class Storage
 {
 public:
     std::vector<Entity> entities;
+    plat::Entity_id cur_camera;
 };
 
 class Sprite : public Component 
@@ -57,17 +58,17 @@ public:
 
     Sprite(const std::string& path);
     std::string get_component_type() override;
-    void Update(float dt, Entity_id parent_id, Storage &storage) override;
+    void update(float dt, Entity_id parent_id, Storage &storage) override;
 };
 
 class Transform : public Component 
 {
 public:
     Vector3 pos;
-    float scale;
-    float angle; 
+    Vector2 scale;
+    float angle;
 
-    void Update(float dt, Entity_id parent_id, Storage &storage) override;
+    void update(float dt, Entity_id parent_id, Storage &storage) override;
     std::string get_component_type() override;
 };
 
@@ -76,7 +77,16 @@ class Player_control : public Component
 public:
     int speed;
 
-    void Update(float dt, Entity_id parent_id, Storage &storage) override;
+    void update(float dt, Entity_id parent_id, Storage &storage) override;
+    std::string get_component_type() override;
+};
+
+class Camera : public Component
+{
+public:
+    Vector2 scale = {1, 1};
+
+    void update(float dt, Entity_id parent_id, Storage &storage) override;
     std::string get_component_type() override;
 };
 

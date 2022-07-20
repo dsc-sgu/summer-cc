@@ -15,7 +15,7 @@ Transform::get_component_type()
 }
 
 void
-Transform::Update(float dt, Entity_id parent_id, Storage &storage)
+Transform::update(float dt, Entity_id parent_id, Storage &storage)
 {}
 
 Sprite::Sprite(const std::string &path)
@@ -31,7 +31,7 @@ Sprite::get_component_type()
 }
 
 void
-Sprite::Update(float dt, Entity_id parent_id, Storage &storage)
+Sprite::update(float dt, Entity_id parent_id, Storage &storage)
 {}
 
 std::string
@@ -41,7 +41,7 @@ Player_control::get_component_type()
 }
 
 void
-Player_control::Update(float dt, int parent_id, Storage &storage)
+Player_control::update(float dt, int parent_id, Storage &storage)
 {
     auto cur_transform = storage.entities[parent_id].getComponent<Transform>();
 
@@ -49,18 +49,62 @@ Player_control::Update(float dt, int parent_id, Storage &storage)
     {
         cur_transform->pos.y += speed * dt;
     }
-    else if (IsKeyDown(KEY_S))
+    if (IsKeyDown(KEY_S))
     {
         cur_transform->pos.y -= speed * dt;
     }
-    
     if (IsKeyDown(KEY_A))
     {
         cur_transform->pos.x -= speed * dt;
     }
-    else if (IsKeyDown(KEY_D))
+    if (IsKeyDown(KEY_D))
     {
         cur_transform->pos.x += speed * dt;
+    }
+}
+
+std::string
+Camera::get_component_type()
+{
+    return std::type_index(typeid(Camera)).name();
+}
+
+void
+Camera::update(float dt, Entity_id parent_id, Storage &storage)
+{
+    plat::Transform *t = storage.entities[parent_id].getComponent<Transform>();
+    plat::Camera *cam = storage.entities[parent_id].getComponent<Camera>();
+    if (IsKeyDown(KEY_LEFT))
+    {
+        t->pos.x -= 1;
+    }
+    if (IsKeyDown(KEY_RIGHT))
+    {
+        t->pos.x += 1;
+    }
+    if (IsKeyDown(KEY_UP))
+    {
+        if (IsKeyDown(KEY_LEFT_SHIFT))
+        {
+            cam->scale.x *= 1.25;
+            cam->scale.y *= 1.25;
+        }
+        else
+        {
+            t->pos.y += 1;
+        }
+    }
+    if (IsKeyDown(KEY_DOWN))
+    {
+        if (IsKeyDown(KEY_LEFT_SHIFT))
+        {
+            cam->scale.x *= 1 / 1.25;
+            cam->scale.y *= 1 / 1.25;
+        }
+        else
+        {
+            t->pos.y -= 1;
+        }
     }
 }
 

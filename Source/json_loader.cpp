@@ -24,7 +24,10 @@ load_lvl(std::string path)
                     component["pos"][1],
                     component["pos"][2]
                 };
-                transform->scale = component["scale"];
+                transform->scale = (Vector2) {
+                    component["scale"][0],
+                    component["scale"][1]
+                };
                 new_lvl.entities.back().components.push_back(transform);
             }
             else if (component["type"] == "PlayerControl")
@@ -38,6 +41,16 @@ load_lvl(std::string path)
                 new_lvl.entities.back().components.push_back(
                     new plat::Sprite(std::string(component["path"]))
                 );
+            }
+            else if (component["type"] == "Camera")
+            {
+                plat::Camera *cam = new plat::Camera();
+                cam->scale = (Vector2) {
+                    component["scale"][0],
+                    component["scale"][1]
+                };
+                new_lvl.entities.back().components.push_back(cam);
+                new_lvl.cur_camera = new_lvl.entities.size() - 1;
             }
         }
     }
