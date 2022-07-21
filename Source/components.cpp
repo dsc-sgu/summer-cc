@@ -53,22 +53,62 @@ void
 Player_control::update(float dt, int parent_id, Storage &storage)
 {
     auto cur_transform = storage.entities[parent_id].getComponent<Transform>();
-
+    auto cur_physics = storage.entities[parent_id].getComponent<Physics>();
+    b2Vec2 velocity = cur_physics->body->GetLinearVelocity();
+    if (!is_waiting && velocity.y < 0)
+    {
+        is_waiting = true;
+        cur_physics->body->SetGravityScale(1.0f);
+    }
+    else if (is_waiting && velocity.y > -0.5f)
+        {
+        is_flying = false;
+        cur_physics->body->SetGravityScale(1.0f);
+        }
     if (IsKeyDown(KEY_W))
     {
-        cur_transform->pos.y += speed * dt;
+        //cur_physics->bodyDef.position.y +=speed * dt;
+        //cur_transform->pos.y += speed * dt;
+        //cur_physics->body->SetAngularVelocity(100);
+        //b2Vec2 velocity = cur_physics->body->GetLinearVelocity();    
+        //cur_physics->body->SetLinearVelocity(velocity);
+        if (!is_flying)
+        {
+        is_flying = true;
+        is_waiting = false;
+        velocity.y+=250.f* speed * dt;
+        cur_physics->body->SetGravityScale(0.1f);
+        cur_physics->body->SetLinearVelocity(velocity);
+        }
     }
     if (IsKeyDown(KEY_S))
     {
+        cur_physics->bodyDef.position.y -=speed * dt;
         cur_transform->pos.y -= speed * dt;
     }
     if (IsKeyDown(KEY_A))
     {
-        cur_transform->pos.x -= speed * dt;
+        velocity.x -= speed * dt;
+        cur_physics->body->SetLinearVelocity(velocity);
+        //cur_physics->bodyDef.position.x -=speed * dt;
+        //cur_transform->pos.x -= speed * dt;
+    }
+    else if (IsKeyReleased(KEY_A))
+    {
+        velocity.x = 0.f;
+        cur_physics->body->SetLinearVelocity(velocity);
     }
     if (IsKeyDown(KEY_D))
     {
-        cur_transform->pos.x += speed * dt;
+        velocity.x += speed * dt;
+        cur_physics->body->SetLinearVelocity(velocity);
+        //cur_physics->bodyDef.position.x +=speed * dt;
+        //cur_transform->pos.x += speed * dt;
+    }
+    else if (IsKeyReleased(KEY_D))
+    {
+        velocity.x = 0.f;
+        cur_physics->body->SetLinearVelocity(velocity);
     }
 }
 
