@@ -118,7 +118,7 @@ void
 Physics::update(float dt, Entity_id parent_id, Storage &storage)
 {}
 
-World::World(b2Vec2 gravity, float timestep = 1.0f/60.0f, int32 vel_it = 6, int32 pos_it = 2)
+World::World(b2Vec2 gravity, float timestep, int32 vel_it, int32 pos_it)
 {
     b2World world(gravity);
     time_settings.dt = timestep;
@@ -135,6 +135,7 @@ World::get_component_type()
 void
 World::update(float dt, Entity_id parent_id, Storage &storage)
 {
+    std::cout<<"I am here\n";
     cur_world->Step(time_settings.dt, time_settings.velocityIterations ,time_settings.positionIterations);
 }
 

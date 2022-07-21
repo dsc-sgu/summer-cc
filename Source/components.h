@@ -50,6 +50,7 @@ class Storage
 public:
     std::vector<Entity> entities;
     plat::Entity_id cur_camera;
+    plat::Entity_id cur_world;
 };
 
 class Sprite : public Component 

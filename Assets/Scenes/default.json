@@ -37,7 +37,7 @@
             {
                 "type": "Transform",
                 "angle": 0,
-                "pos": [0, 0, 0],
+                "pos": [50, 50, 0],
                 "scale": [1, 1]
             },
             {
@@ -49,7 +49,7 @@
                 "path": "Assets/Textures/King_stay.png"
             },
             {
-                "type": "Physic",
+                "type": "Physics",
                 "body": "dynamic"
             }
         ]

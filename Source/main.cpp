@@ -8,14 +8,12 @@
 int
 main()
 {
-    b2Vec2 grtavity = {0.0f, -10.0f};
     const Vector2 screen_size { 720, 480 };
     InitWindow(screen_size.x, screen_size.y, "Creative Coding: Platformer");
     SetTargetFPS(60);
 
     plat::Storage storage = load_lvl("Assets/Scenes/default.json");
     std::vector<plat::Entity *> draw_queue = create_draw_order(storage.entities);
-    b2World world(grtavity);
     
     while (!WindowShouldClose())
     {
@@ -23,6 +21,7 @@ main()
         {
             for (auto &component : entity.components)
             {
+                std::cout<<"I am Here\n";
                 component->update(GetFrameTime(), entity.id, storage);
             }
         }
@@ -46,7 +45,7 @@ main()
                         (cam_t->pos.y - t->pos.y) * cam->scale.y
                     };
                     screen_pos += screen_size * 0.5f;
-
+                    std::cout<<"I am here\n";
                     int sprite_width = spr->image.width * t->scale.x * cam->scale.x;
                     int sprite_height = spr->image.height * t->scale.y * cam->scale.y;
                     screen_pos -= Vector2 {

@@ -27,6 +27,8 @@ load_lvl(std::string path)
                     velocityIterations,
                     positionIterations);
                 new_lvl.entities.back().components.push_back(Cur_World);
+                new_lvl.cur_world = new_lvl.entities.size() - 1;
+
             }
             else if (component["type"] == "Transform")
             {
@@ -57,11 +59,25 @@ load_lvl(std::string path)
             }
             else if (component["type"] == "Physics")
             {
-                if (component["type"] == "dynamic")
+                if (component["body"] == "dynamic")
                 {
                     plat::Physics * cur_phys = new plat::Physics();
                     cur_phys->bodyDef.type = b2_dynamicBody;
+                    std::cout<<"I am Here\n";
                     plat::Transform *trans = new_lvl.entities.back().getComponent<plat::Transform>();
+                    plat::Sprite *spr = new_lvl.entities.back().getComponent<plat::Sprite>();
+                    plat::Camera *cam = new_lvl.entities[new_lvl.cur_camera].getComponent<plat::Camera>();
+                    int sprite_width = spr->image.width * trans->scale.x * cam->scale.x;
+                    int sprite_height = spr->image.height * trans->scale.y * cam->scale.y;
+                    cur_phys->bodyDef.position.Set(trans->pos.x, trans->pos.y);
+                    cur_phys->body = new_lvl.entities[new_lvl.cur_world].getComponent<plat::World>()->cur_world->CreateBody(&cur_phys->bodyDef);
+                    b2PolygonShape dynamicBox;
+                    dynamicBox.SetAsBox(sprite_width, sprite_height);
+                    b2FixtureDef fixtureDef;
+                    fixtureDef.shape = &dynamicBox;
+                    fixtureDef.density = 1.0f;
+                    fixtureDef.friction = 0.3f;
+                    cur_phys->body->CreateFixture(&fixtureDef);
                 }
             }
             else if (component["type"] == "Camera")
