@@ -8,58 +8,62 @@
 int
 main()
 {
-    const Vector2 screen_size { 640, 480 };
+    const Vector2 screen_size { 720, 480 };
     InitWindow(screen_size.x, screen_size.y, "Creative Coding: Platformer");
     SetTargetFPS(60);
 
-    Viewport viewport = {0, screen_size.x, screen_size.y, 0};
-    set_viewport(viewport, screen_size, { 0, 0, screen_size.x, screen_size.y });
-
-    Storage storage = load_lvl("Asssets/Scenes/default.json");
-
-    std::vector<Entity *> draw_queue = create_draw_order(storage.entities);
+    plat::Storage storage = load_lvl("Assets/Scenes/default.json");
+    std::vector<plat::Entity *> draw_queue = create_draw_order(storage.entities);
 
     while (!WindowShouldClose())
     {
-        for (int i = 0; i < storage.entities.size(); ++i)
+        for (auto &entity : storage.entities)
         {
-            for(int j = 0; j < storage.entities[i].components.size(); ++j)
+            for (auto &component : entity.components)
             {
-                storage.entities[i].components[j]->Update(GetFrameTime(), storage.entities[i].id, storage);
+                component->update(GetFrameTime(), entity.id, storage);
             }
         }
+
+        plat::Camera *cam = storage.entities[storage.cur_camera].getComponent<plat::Camera>();
+        plat::Transform *cam_t = storage.entities[storage.cur_camera].getComponent<plat::Transform>();
 
         BeginDrawing();
         ClearBackground(BLACK);
         for (int i = 0; i < draw_queue.size(); ++i)
         {
-            for(int j = 0; j < draw_queue[i]->components.size(); ++j)
+            for (int j = 0; j < draw_queue[i]->components.size(); ++j)
             {
-                _Transform* transform = draw_queue[i]->getComponent<_Transform>();
-                _Sprite* sprite = draw_queue[i]->getComponent<_Sprite>();
-                Vector2 screen_transform = screen_to_local(viewport, screen_size, { transform->pos.x, transform->pos.y });
-                DrawTexture(sprite->texture, screen_transform.x, screen_transform.y-sprite->texture.height, WHITE);
-            }   
-        }
-        if (IsKeyDown(KEY_LEFT))
-        {
-            viewport.left += 1;
-            viewport.right += 1;
-        }
-        if (IsKeyDown(KEY_RIGHT))
-        {
-            viewport.left -= 1;
-            viewport.right -= 1;
-        }
-        if (IsKeyDown(KEY_UP))
-        {
-            viewport.top += 1;
-            viewport.bottom += 1;
-        }
-        if (IsKeyDown(KEY_DOWN))
-        {
-            viewport.top -= 1;
-            viewport.bottom -= 1;
+                plat::Sprite *spr = draw_queue[i]->getComponent<plat::Sprite>();
+                if (spr)
+                {
+                    plat::Transform *t = draw_queue[i]->getComponent<plat::Transform>();
+
+                    Vector2 screen_pos = {
+                        (t->pos.x - cam_t->pos.x) * cam->scale.x,
+                        (cam_t->pos.y - t->pos.y) * cam->scale.y
+                    };
+                    screen_pos += screen_size * 0.5f;
+
+                    int sprite_width = spr->image.width * t->scale.x * cam->scale.x;
+                    int sprite_height = spr->image.height * t->scale.y * cam->scale.y;
+                    screen_pos -= Vector2 {
+                        (float) sprite_width,
+                        (float) sprite_height
+                    } * 0.5f;
+
+                    if (sprite_width != spr->texture.width
+                        || sprite_height != spr->texture.height)
+                    {
+                        UnloadTexture(spr->texture);
+                        Image image = ImageCopy(spr->image);
+                        ImageResizeNN(&image, sprite_width, sprite_height);
+                        spr->texture = LoadTextureFromImage(image);
+                    }
+
+                    DrawTextureV(spr->texture, screen_pos, WHITE);
+                }
+            }
         }
 
         DrawFPS(10, 10);
@@ -70,4 +74,3 @@ main()
 
     return 0;
 }
-

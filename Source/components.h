@@ -6,6 +6,8 @@
 #include <typeindex>
 #include <raylib-ext.hpp>
 
+namespace plat {
+
 typedef int Entity_id;
 
 class Storage;
@@ -13,7 +15,7 @@ class Storage;
 class Component 
 {
 public:
-    virtual void Update(float dt, Entity_id parent_id, Storage &storage) = 0;
+    virtual void update(float dt, Entity_id parent_id, Storage &storage) = 0;
     virtual std::string get_component_type() = 0;
 };
 
@@ -22,7 +24,8 @@ class Entity
 public:
     Entity_id id;
     std::vector<Component *> components;
-    static unsigned count;
+
+    Entity();
 
     template <typename T> 
     T *
@@ -44,35 +47,51 @@ class Storage
 {
 public:
     std::vector<Entity> entities;
+    plat::Entity_id cur_camera;
 };
 
-class _Sprite : public Component 
+class Sprite : public Component 
 {
 public:
-    _Sprite(const std::string& path);
-    _Sprite();
-    void Update(float dt, Entity_id parent_id, Storage &storage) override;
-    std::string get_component_type() override;
     Texture2D texture;
     Image image;
+
+    Sprite(const std::string& path);
+    std::string get_component_type() override;
+    void update(float dt, Entity_id parent_id, Storage &storage) override;
 };
 
-class _Transform : public Component 
+class Transform : public Component 
 {
 public:
-    void Update(float dt, Entity_id parent_id, Storage &storage) override;
-    std::string get_component_type() override;
     Vector3 pos;
-    float angle; 
+    Vector2 scale;
+    float angle;
+
+    void update(float dt, Entity_id parent_id, Storage &storage) override;
+    std::string get_component_type() override;
 };
 
-class _Player_control : public Component 
+class Player_control : public Component 
 {
 public:
-    void Update(float dt, Entity_id parent_id, Storage &storage) override;
-    std::string get_component_type() override;
     int speed;
+
+    void update(float dt, Entity_id parent_id, Storage &storage) override;
+    std::string get_component_type() override;
 };
+
+class Camera : public Component
+{
+public:
+    Vector2 scale = {1, 1};
+
+    void update(float dt, Entity_id parent_id, Storage &storage) override;
+    std::string get_component_type() override;
+};
+
+} // namespace plat
+
 /*
 class _GUI : public Component
 {

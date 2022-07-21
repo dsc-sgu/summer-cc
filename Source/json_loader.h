@@ -3,4 +3,4 @@
 #include <fstream>
 #include "components.h"
 
-Storage load_lvl(std::string path);
+plat::Storage load_lvl(std::string path);

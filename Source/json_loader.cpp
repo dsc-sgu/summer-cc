@@ -2,33 +2,57 @@
 
 using json = nlohmann::json;
 
-Storage load_lvl(std::string path) {
-    Storage new_lvl;
-    json lvl_json;
+plat::Storage
+load_lvl(std::string path)
+{
+    plat::Storage new_lvl;
     std::ifstream lvl_file(path);
+    json lvl_json;
     lvl_file >> lvl_json;
-    int n = lvl_json["count"];
 
-    for (int i = 0; i < n; i++) {
-        new_lvl.entities.push_back(Entity());
-        new_lvl.entities[i].id = i;
-        auto entity = lvl_json["entities"][i];
-        for (int j = 0; j < 3; j++)
-            if (entity[j]["type"] == "Transform") {
-                _Transform* transform = new _Transform();
-                transform->angle = entity[j]["angle"];
-                transform->pos = Vector3{ entity[j]["pos"]["x"], entity[j]["pos"]["y"], entity[j]["pos"]["z"] };
-                new_lvl.entities[i].components.push_back(transform);
+    for (auto &entity : lvl_json["entities"])
+    {
+        new_lvl.entities.push_back(plat::Entity());
+        for (auto &component : entity)
+        {
+            if (component["type"] == "Transform")
+            {
+                plat::Transform *transform = new plat::Transform();
+                transform->angle = component["angle"];
+                transform->pos = Vector3 {
+                    component["pos"][0],
+                    component["pos"][1],
+                    component["pos"][2]
+                };
+                transform->scale = Vector2 {
+                    component["scale"][0],
+                    component["scale"][1]
+                };
+                new_lvl.entities.back().components.push_back(transform);
             }
-            else if (entity[j]["type"] == "PlayerControl") {
-                _Player_control* player_control = new _Player_control();
-                player_control->speed = entity[j]["speed"];
-                new_lvl.entities[i].components.push_back(player_control);
+            else if (component["type"] == "PlayerControl")
+            {
+                plat::Player_control *player_control = new plat::Player_control();
+                player_control->speed = component["speed"];
+                new_lvl.entities.back().components.push_back(player_control);
             }
-            else if (entity[j]["type"] == "Sprite") {
-                _Sprite* sprite = new _Sprite(entity[j]["path"]);
-                new_lvl.entities[i].components.push_back(sprite);
+            else if (component["type"] == "Sprite")
+            {
+                new_lvl.entities.back().components.push_back(
+                    new plat::Sprite(std::string(component["path"]))
+                );
             }
+            else if (component["type"] == "Camera")
+            {
+                plat::Camera *cam = new plat::Camera();
+                cam->scale = Vector2 {
+                    component["scale"][0],
+                    component["scale"][1]
+                };
+                new_lvl.entities.back().components.push_back(cam);
+                new_lvl.cur_camera = new_lvl.entities.size() - 1;
+            }
+        }
     }
 
     lvl_file.close();

@@ -1,0 +1,44 @@
+{
+    "entities": [
+        [
+            {
+                "type": "Transform",
+                "angle": 0,
+                "pos": [0, 0, 0],
+                "scale": [1, 1]
+            },
+            {
+                "type": "Camera",
+                "scale": [1, 1]
+            }
+        ],
+        [
+            {
+                "type": "Transform",
+                "angle": 0,
+                "pos": [0, 0, -99999],
+                "scale": [1, 1]
+            },
+            {
+                "type": "Sprite",
+                "path": "Assets/Textures/bg.png"
+            }
+        ],
+        [
+            {
+                "type": "Transform",
+                "angle": 0,
+                "pos": [0, 0, 0],
+                "scale": [1, 1]
+            },
+            {
+                "type": "PlayerControl",
+                "speed": 200
+            },
+            {
+                "type": "Sprite",
+                "path": "Assets/Textures/King_stay.png"
+            }
+        ]
+    ]
+}
