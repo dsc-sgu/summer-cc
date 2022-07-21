@@ -5,7 +5,7 @@ jobs:
     steps:
       - uses: actions/checkout@main
       - name: Setup Ninja
-        run: apt install ninja-build
+        run: sudo apt install ninja-build
       - name: Create build files for Ninja
         run:  cmake -DBUILD_SHARED_LIBS=False -G Ninja -S . -B ./Build
       - name: Build project with Ninja
