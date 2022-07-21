@@ -12,6 +12,9 @@ jobs:
       - name: Setup Ninja for Linux
         if: matrix.os == 'ubuntu-latest'
         run: sudo apt install ninja-build
+      - name: Setup Ninja for macOS
+        if: matrix.os == 'macOS-latest'
+        run: brew install ninja
       - name: Setup build libraries on Linux
         if: matrix.os == 'ubuntu-latest'
         run: sudo apt install libx11-dev libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev libgl-dev
