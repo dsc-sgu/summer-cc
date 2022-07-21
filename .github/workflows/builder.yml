@@ -1,0 +1,40 @@
+on: [push]
+jobs:
+  build-project-unix:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macOS-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@main
+        with:
+          submodules: true
+      - name: Setup Ninja for Linux
+        if: matrix.os == 'ubuntu-latest'
+        run: sudo apt install ninja-build
+      - name: Setup Ninja for macOS
+        if: matrix.os == 'macOS-latest'
+        run: brew install ninja
+      - name: Setup build libraries on Linux
+        if: matrix.os == 'ubuntu-latest'
+        run: sudo apt install libx11-dev libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev libgl-dev
+      - name: Create build files for Ninja
+        run:  cmake -DBUILD_SHARED_LIBS=False -G Ninja -S . -B ./Build
+      - name: Build project with Ninja
+        run:  ninja -C ./Build
+  build-project-windows:
+    strategy:
+      matrix:
+        os: [windows-2019]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@main
+        with:
+          submodules: true
+      - name: Add MSBuild to PATH
+        uses: microsoft/setup-msbuild@v1.1
+      - name: Create build files for MSBuild
+        run:  cmake -DBUILD_SHARED_LIBS=False -G "Visual Studio 16 2019" -S . -B ./Build
+      - name: Build project with MSBuild
+        run:  msbuild .\Build\summer-cc.sln /p:Configuration=Debug
+
