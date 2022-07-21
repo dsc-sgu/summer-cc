@@ -1,6 +1,7 @@
 #pragma once
 #include <raylib-ext.hpp>
 #include "components.h"
+#include<algorithm>
 
 namespace plat {
 
