@@ -1,0 +1,10 @@
+on: [push]
+jobs:
+  build-project:
+    runs-on: ['ubuntu-latest']
+    steps:
+      - uses: actions/checkout@main
+      - name: Create build files for Ninja
+        run:  cmake -DBUILD_SHARED_LIBS=False -G Ninja -S . -B ./Build
+      - name: Build project with Ninja
+        run:  ninja -C ./Build
