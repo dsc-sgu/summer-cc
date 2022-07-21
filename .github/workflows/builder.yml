@@ -36,5 +36,5 @@ jobs:
       - name: Create build files for MSBuild
         run:  cmake -DBUILD_SHARED_LIBS=False -G "Visual Studio 16 2019" -S . -B ./Build
       - name: Build project with MSBuild
-        run:  msbuild .\Build\summer-cc.sln /Build
+        run:  msbuild .\Build\summer-cc.sln /p:Configuration=Debug
 
