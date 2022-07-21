@@ -57,7 +57,7 @@
             {
                 "type": "Transform",
                 "angle": 0,
-                "pos": [50, -100, 0],
+                "pos": [0, 0, 0],
                 "scale": [1, 1]
             },
             {

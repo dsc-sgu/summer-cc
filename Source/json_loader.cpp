@@ -59,25 +59,21 @@ load_lvl(std::string path)
             }
             else if (component["type"] == "Physics")
             {
-               
                 plat::Transform *trans = new_lvl.entities.back().getComponent<plat::Transform>();
                 plat::Sprite *spr = new_lvl.entities.back().getComponent<plat::Sprite>();
-                plat::Camera *cam = new_lvl.entities[new_lvl.cur_camera].getComponent<plat::Camera>();
 
                 plat::Physics *cur_phys = new plat::Physics();
 
-                int sprite_width = spr->image.width * trans->scale.x * cam->scale.x;
-                int sprite_height = spr->image.height * trans->scale.y * cam->scale.y;
+                int sprite_width = spr->image.width * trans->scale.x;
+                int sprite_height = spr->image.height * trans->scale.y;
                 cur_phys->bodyDef.position.Set(trans->pos.x, trans->pos.y);
-                std::cout<<trans->pos.x<<" "<<trans->pos.y<<"\n";
                 b2PolygonShape *dynamicBox = new b2PolygonShape();
-                dynamicBox->SetAsBox(sprite_width, sprite_height);
+                dynamicBox->SetAsBox(sprite_width / 2, sprite_height / 2);
+
                 if (component["body"] == "dynamic")
                 {
                     cur_phys->bodyDef.type = b2_dynamicBody;
                     cur_phys->body = new_lvl.entities[new_lvl.cur_world].getComponent<plat::World>()->cur_world->CreateBody(&cur_phys->bodyDef);
-
-                    
 
                     b2FixtureDef *fixtureDef = new b2FixtureDef();
                     fixtureDef->shape = dynamicBox;
@@ -90,8 +86,7 @@ load_lvl(std::string path)
                     cur_phys->body = new_lvl.entities[new_lvl.cur_world].getComponent<plat::World>()->cur_world->CreateBody(&cur_phys->bodyDef);   
                     cur_phys->body->CreateFixture(dynamicBox,0.0f);
                 }
-                    new_lvl.entities.back().components.push_back(cur_phys);
-                
+                new_lvl.entities.back().components.push_back(cur_phys);
             }
             else if (component["type"] == "Camera")
             {
