@@ -2,6 +2,7 @@
 #include <raylib-ext.hpp>
 #include <iostream>
 #include <algorithm>
+#include <box2d/box2d.h>
 #include "json_loader.h"
 #include "render.h"
 
