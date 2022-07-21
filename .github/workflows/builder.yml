@@ -7,10 +7,10 @@ jobs:
         with:
           submodules: true
       - name: Setup Ninja for Linux
-        if: runner.os == 'ubuntu-latest'
+        if: runner.os == 'Linux'
         run: sudo apt install ninja-build
       - name: Setup build libraries on Linux
-        if: runner.os == 'ubuntu-latest'
+        if: runner.os == 'Linux'
         run: sudo apt install libx11-dev libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev libgl-dev
       - name: Create build files for Ninja
         run:  cmake -DBUILD_SHARED_LIBS=False -G Ninja -S . -B ./Build
