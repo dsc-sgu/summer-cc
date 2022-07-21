@@ -7,11 +7,11 @@ jobs:
         with:
           submodules: true
       - name: Setup Ninja for Linux
-        run:  sudo apt install ninja-build
-        if:   matrix.os == 'ubuntu-latest'
+        if: matrix.os == 'ubuntu-latest'
+          run: sudo apt install ninja-build
       - name: Setup build libraries on Linux
-        run:  sudo apt install libx11-dev libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev libgl-dev
-        if:   matrix.os == 'ubuntu-latest'
+        if: matrix.os == 'ubuntu-latest'
+          run: sudo apt install libx11-dev libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev libgl-dev
       - name: Create build files for Ninja
         run:  cmake -DBUILD_SHARED_LIBS=False -G Ninja -S . -B ./Build
       - name: Build project with Ninja
