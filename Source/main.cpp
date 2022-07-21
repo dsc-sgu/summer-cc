@@ -47,7 +47,7 @@ main()
 
                     int sprite_width = spr->image.width * t->scale.x * cam->scale.x;
                     int sprite_height = spr->image.height * t->scale.y * cam->scale.y;
-                    screen_pos -= (Vector2) {
+                    screen_pos -= Vector2 {
                         (float) sprite_width,
                         (float) sprite_height
                     } * 0.5f;

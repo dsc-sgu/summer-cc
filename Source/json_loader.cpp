@@ -19,12 +19,12 @@ load_lvl(std::string path)
             {
                 plat::Transform *transform = new plat::Transform();
                 transform->angle = component["angle"];
-                transform->pos = (Vector3) {
+                transform->pos = Vector3 {
                     component["pos"][0],
                     component["pos"][1],
                     component["pos"][2]
                 };
-                transform->scale = (Vector2) {
+                transform->scale = Vector2 {
                     component["scale"][0],
                     component["scale"][1]
                 };
@@ -45,7 +45,7 @@ load_lvl(std::string path)
             else if (component["type"] == "Camera")
             {
                 plat::Camera *cam = new plat::Camera();
-                cam->scale = (Vector2) {
+                cam->scale = Vector2 {
                     component["scale"][0],
                     component["scale"][1]
                 };
