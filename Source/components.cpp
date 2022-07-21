@@ -108,4 +108,34 @@ Camera::update(float dt, Entity_id parent_id, Storage &storage)
     }
 }
 
+std::string
+Physics::get_component_type()
+{
+    return std::type_index(typeid(Physics)).name();
+}
+
+void
+Physics::update(float dt, Entity_id parent_id, Storage &storage)
+{}
+
+World::World(b2Vec2 gravity, float timestep = 1.0f/60.0f, int32 vel_it = 6, int32 pos_it = 2)
+{
+    b2World world(gravity);
+    time_settings.dt = timestep;
+    time_settings.positionIterations = pos_it;
+    time_settings.velocityIterations = vel_it;
+    cur_world = &world; 
+}
+
+std::string
+World::get_component_type()
+{
+    return std::type_index(typeid(World)).name();
+}
+void
+World::update(float dt, Entity_id parent_id, Storage &storage)
+{
+    cur_world->Step(time_settings.dt, time_settings.velocityIterations ,time_settings.positionIterations);
+}
+
 }

@@ -15,7 +15,20 @@ load_lvl(std::string path)
         new_lvl.entities.push_back(plat::Entity());
         for (auto &component : entity)
         {
-            if (component["type"] == "Transform")
+            if (component["type"] == "World")
+            {
+                b2Vec2 gravity(component["gravity"][0], component["gravity"][1]);
+                float time = component["timeStep"];
+                int32 velocityIterations = component["Velocity"];
+                int32 positionIterations = component ["Position"];
+                plat::World *Cur_World = new plat::World(
+                    gravity,
+                    time,
+                    velocityIterations,
+                    positionIterations);
+                new_lvl.entities.back().components.push_back(Cur_World);
+            }
+            else if (component["type"] == "Transform")
             {
                 plat::Transform *transform = new plat::Transform();
                 transform->angle = component["angle"];
@@ -41,6 +54,15 @@ load_lvl(std::string path)
                 new_lvl.entities.back().components.push_back(
                     new plat::Sprite(std::string(component["path"]))
                 );
+            }
+            else if (component["type"] == "Physics")
+            {
+                if (component["type"] == "dynamic")
+                {
+                    plat::Physics * cur_phys = new plat::Physics();
+                    cur_phys->bodyDef.type = b2_dynamicBody;
+                    plat::Transform *trans = new_lvl.entities.back().getComponent<plat::Transform>();
+                }
             }
             else if (component["type"] == "Camera")
             {
