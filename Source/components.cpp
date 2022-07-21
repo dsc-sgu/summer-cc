@@ -16,7 +16,16 @@ Transform::get_component_type()
 
 void
 Transform::update(float dt, Entity_id parent_id, Storage &storage)
-{}
+{
+    plat::Physics *ph = storage.entities[parent_id].getComponent<Physics>();
+    if (!ph)
+    {
+        return;
+    }
+
+    b2Vec2 new_pos = ph->body->GetPosition();
+    this->pos = Vector3 { new_pos.x, new_pos.y, this->pos.z };
+}
 
 Sprite::Sprite(const std::string &path)
 {
@@ -120,11 +129,11 @@ Physics::update(float dt, Entity_id parent_id, Storage &storage)
 
 World::World(b2Vec2 gravity, float timestep, int32 vel_it, int32 pos_it)
 {
-    b2World world(gravity);
+    b2World *world = new b2World(gravity);
     time_settings.dt = timestep;
     time_settings.positionIterations = pos_it;
     time_settings.velocityIterations = vel_it;
-    cur_world = &world; 
+    cur_world = world; 
 }
 
 std::string
@@ -132,10 +141,10 @@ World::get_component_type()
 {
     return std::type_index(typeid(World)).name();
 }
+
 void
 World::update(float dt, Entity_id parent_id, Storage &storage)
 {
-    std::cout<<"I am here\n";
     cur_world->Step(time_settings.dt, time_settings.velocityIterations ,time_settings.positionIterations);
 }
 

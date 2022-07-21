@@ -21,7 +21,6 @@ main()
         {
             for (auto &component : entity.components)
             {
-                std::cout<<"I am Here\n";
                 component->update(GetFrameTime(), entity.id, storage);
             }
         }
@@ -45,7 +44,6 @@ main()
                         (cam_t->pos.y - t->pos.y) * cam->scale.y
                     };
                     screen_pos += screen_size * 0.5f;
-                    std::cout<<"I am here\n";
                     int sprite_width = spr->image.width * t->scale.x * cam->scale.x;
                     int sprite_height = spr->image.height * t->scale.y * cam->scale.y;
                     screen_pos -= Vector2 {
