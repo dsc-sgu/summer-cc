@@ -37,7 +37,7 @@
             {
                 "type": "Transform",
                 "angle": 0,
-                "pos": [50, 50, 0],
+                "pos": [0, 0, 0],
                 "scale": [1, 1]
             },
             {
@@ -51,6 +51,22 @@
             {
                 "type": "Physics",
                 "body": "dynamic"
+            }
+        ],
+        [
+            {
+                "type": "Transform",
+                "angle": 0,
+                "pos": [50, -100, 0],
+                "scale": [1, 1]
+            },
+            {
+                "type": "Sprite",
+                "path": "Assets/Textures/Ground.png"
+            },
+            {
+                "type": "Physics",
+                "body": "static"
             }
         ]
     ]
