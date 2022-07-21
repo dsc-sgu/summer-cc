@@ -33,9 +33,6 @@ jobs:
           submodules: true
       - name: Add MSBuild to PATH
         uses: microsoft/setup-msbuild@v1.1
-        with:
-          msbuild-architecture: x64
-          vs-version: '[16.0,17.0)'
       - name: Create build files for MSBuild
         run:  cmake -DBUILD_SHARED_LIBS=False -G "Visual Studio 16 2019" -S . -B ./Build
       - name: Build project with MSBuild
