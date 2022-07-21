@@ -4,6 +4,8 @@ jobs:
     runs-on: ['ubuntu-latest']
     steps:
       - uses: actions/checkout@main
+        with:
+          submodules: true
       - name: Setup Ninja
         run: sudo apt install ninja-build
       - name: Create build files for Ninja
