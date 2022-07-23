@@ -61,24 +61,23 @@ Player_control::update(float dt, int parent_id, Storage &storage)
         cur_physics->body->SetGravityScale(1.0f);
     }
     else if (is_waiting && velocity.y > -0.5f)
-        {
+    {
         is_flying = false;
         cur_physics->body->SetGravityScale(1.0f);
-        }
+    }
+    if(IsKeyPressed(KEY_LEFT_SHIFT))
+        cur_physics->body->SetGravityScale(0.1f);
     if (IsKeyDown(KEY_W))
     {
-        //cur_physics->bodyDef.position.y +=speed * dt;
-        //cur_transform->pos.y += speed * dt;
-        //cur_physics->body->SetAngularVelocity(100);
-        //b2Vec2 velocity = cur_physics->body->GetLinearVelocity();    
-        //cur_physics->body->SetLinearVelocity(velocity);
-        if (!is_flying)
+        if (!is_flying && cur_physics->body->GetLinearVelocity().y > -0.1)
         {
         is_flying = true;
         is_waiting = false;
-        velocity.y+=250.f* speed * dt;
-        cur_physics->body->SetGravityScale(0.1f);
-        cur_physics->body->SetLinearVelocity(velocity);
+        // DON'T TOUCH NUMBER, IT'S MAGICAL(you can increase it, but don't decrease it)
+        float impulse = cur_physics->body->GetMass() * speed * 50;
+        cur_physics->body->ApplyLinearImpulse(
+            b2Vec2(velocity.x, impulse ),
+            cur_physics->body->GetWorldCenter(), true);
         }
     }
     if (IsKeyDown(KEY_S))
@@ -88,10 +87,11 @@ Player_control::update(float dt, int parent_id, Storage &storage)
     }
     if (IsKeyDown(KEY_A))
     {
-        velocity.x -= speed * dt;
-        cur_physics->body->SetLinearVelocity(velocity);
-        //cur_physics->bodyDef.position.x -=speed * dt;
-        //cur_transform->pos.x -= speed * dt;
+        // DON'T TOUCH NUMBER, IT'S MAGICAL(you can increase it, but don't decrease it)
+        float impulse = -cur_physics->body->GetMass()*speed / 100;
+        cur_physics->body->ApplyLinearImpulse(
+            b2Vec2(impulse, 0),
+            cur_physics->body->GetWorldCenter(), true);
     }
     else if (IsKeyReleased(KEY_A))
     {
@@ -100,10 +100,11 @@ Player_control::update(float dt, int parent_id, Storage &storage)
     }
     if (IsKeyDown(KEY_D))
     {
-        velocity.x += speed * dt;
-        cur_physics->body->SetLinearVelocity(velocity);
-        //cur_physics->bodyDef.position.x +=speed * dt;
-        //cur_transform->pos.x += speed * dt;
+        // DON'T TOUCH NUMBER, IT'S MAGICAL(you can increase it, but don't decrease it)
+        float impulse = cur_physics->body->GetMass()* speed /100;
+        cur_physics->body->ApplyLinearImpulse(
+            b2Vec2(impulse, 0),
+            cur_physics->body->GetWorldCenter(), true);
     }
     else if (IsKeyReleased(KEY_D))
     {

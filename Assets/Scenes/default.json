@@ -4,7 +4,7 @@
             {
                 "type": "World",
                 "gravity": [0.0, -10.0],
-                "timeStep": 0.15,
+                "timeStep": 0.08,
                 "Velocity": 6,
                 "Position": 2
             }
@@ -58,7 +58,7 @@
                 "type": "Transform",
                 "angle": 0,
                 "pos": [0, 0, 0],
-                "scale": [1, 1]
+                "scale": [50, 1]
             },
             {
                 "type": "Sprite",
