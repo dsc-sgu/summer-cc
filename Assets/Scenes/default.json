@@ -87,6 +87,23 @@
                 "body": "static",
                 "collider": [1, 0, 25, 13]
             }
+        ],
+        [
+            {
+                "type": "Transform",
+                "angle": 0,
+                "pos": [100, 85, 0],
+                "scale": [1, 1]
+            },
+            {
+                "type": "Sprite",
+                "path": "Assets/Textures/pig.png"
+            },
+            {
+                "type": "Physics",
+                "body": "dynamic",
+                "collider": [10, 0, 20, 15]
+            }
         ]
     ]
 }

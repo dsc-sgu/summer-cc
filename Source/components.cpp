@@ -42,10 +42,6 @@ Transform::update(float dt, Entity_id parent_id, Storage &storage)
         ph->collider.width / 2.f,
         ph->collider.height / 2.f
     };
-    // new_pos -= {
-    //     spr->image.width / 2.f,
-    //     spr->image.height / 2.f
-    // };
     this->pos = Vector3 {
         new_pos.x,
         new_pos.y,
