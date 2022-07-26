@@ -23,8 +23,34 @@ Transform::update(float dt, Entity_id parent_id, Storage &storage)
         return;
     }
 
+    plat::Sprite *spr = storage.entities[parent_id].getComponent<Sprite>();
+    if (!spr)
+    {
+        return;
+    }
+
     b2Vec2 new_pos = ph->body->GetPosition();
-    this->pos = Vector3 { new_pos.x, new_pos.y, this->pos.z };
+    new_pos += {
+        spr->image.width / 2.f,
+        spr->image.height / 2.f
+    };
+    new_pos -= {
+        ph->collider.x,
+        ph->collider.y
+    };
+    new_pos -= {
+        ph->collider.width / 2.f,
+        ph->collider.height / 2.f
+    };
+    // new_pos -= {
+    //     spr->image.width / 2.f,
+    //     spr->image.height / 2.f
+    // };
+    this->pos = Vector3 {
+        new_pos.x,
+        new_pos.y,
+        this->pos.z
+    };
 }
 
 Sprite::Sprite(const std::string &path)
@@ -52,10 +78,8 @@ Player_control::get_component_type()
 void
 Player_control::update(float dt, int parent_id, Storage &storage)
 {
-    auto cur_transform = storage.entities[parent_id].getComponent<Transform>();
     auto cur_physics = storage.entities[parent_id].getComponent<Physics>();
-    auto cur_sprite = storage.entities[parent_id].getComponent<Sprite>();
-    float impulse = cur_physics->body->GetMass()* speed;
+    float impulse = cur_physics->body->GetMass() * speed;
     b2Vec2 velocity = cur_physics->body->GetLinearVelocity();
 
     if (!is_waiting && velocity.y < 0)
@@ -74,7 +98,7 @@ Player_control::update(float dt, int parent_id, Storage &storage)
             is_flying = true;
             is_waiting = false;
             // DON'T TOUCH NUMBER, IT'S MAGICAL(you can increase it, but don't decrease it)
-            //impulse *= 50;
+            // impulse *= 50;
             cur_physics->body->ApplyLinearImpulse(
                 b2Vec2(velocity.x, impulse),
                 cur_physics->body->GetWorldCenter(), true
@@ -98,14 +122,14 @@ Player_control::update(float dt, int parent_id, Storage &storage)
             cur_physics->body->GetWorldCenter(), true
         );
         
-        if (is_right && velocity.x < - 0.1 )
-        {
-            is_right = false;
-            UnloadTexture(cur_sprite->texture);
-            ImageFlipHorizontal(&cur_sprite->image);
-            Image image = ImageCopy(cur_sprite->image);
-            cur_sprite->texture = LoadTextureFromImage(image);
-        }
+        // if (is_right && velocity.x < - 0.1 )
+        // {
+        //     is_right = false;
+        //     UnloadTexture(cur_sprite->texture);
+        //     ImageFlipHorizontal(&cur_sprite->image);
+        //     Image image = ImageCopy(cur_sprite->image);
+        //     cur_sprite->texture = LoadTextureFromImage(image);
+        // }
     }
     else if (IsKeyReleased(KEY_A))
     {
@@ -122,14 +146,14 @@ Player_control::update(float dt, int parent_id, Storage &storage)
             cur_physics->body->GetWorldCenter(), true
         );
         
-        if (!is_right && velocity.x >= 0 )
-        {
-            is_right = true;
-            UnloadTexture(cur_sprite->texture);
-            ImageFlipHorizontal(&cur_sprite->image);
-            Image image = ImageCopy(cur_sprite->image);
-            cur_sprite->texture = LoadTextureFromImage(image);
-        }
+        // if (!is_right && velocity.x >= 0 )
+        // {
+        //     is_right = true;
+        //     UnloadTexture(cur_sprite->texture);
+        //     ImageFlipHorizontal(&cur_sprite->image);
+        //     Image image = ImageCopy(cur_sprite->image);
+        //     cur_sprite->texture = LoadTextureFromImage(image);
+        // }
     }
     else if (IsKeyReleased(KEY_D))
     {
@@ -212,7 +236,7 @@ World::get_component_type()
 void
 World::update(float dt, Entity_id parent_id, Storage &storage)
 {
-    cur_world->Step(time_settings.dt, time_settings.velocityIterations ,time_settings.positionIterations);
+    cur_world->Step(time_settings.dt, time_settings.velocityIterations, time_settings.positionIterations);
 }
 
 }

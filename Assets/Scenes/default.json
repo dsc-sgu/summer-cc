@@ -18,7 +18,7 @@
             },
             {
                 "type": "Camera",
-                "scale": [2, 2]
+                "scale": [1, 1]
             }
         ],
         [
@@ -51,14 +51,14 @@
             {
                 "type": "Physics",
                 "body": "dynamic",
-                "collider": [9, 15, 37, 29]
+                "collider": [21, 15, 21, 28]
             }
         ],
         [
             {
                 "type": "Transform",
                 "angle": 0,
-                "pos": [0, 0, 0],
+                "pos": [0, -15, 0],
                 "scale": [50, 1]
             },
             {
@@ -68,7 +68,7 @@
             {
                 "type": "Physics",
                 "body": "static",
-                "collider": [1, 7, 25, 13]
+                "collider": [1, 0, 25, 13]
             }
         ],
         [
@@ -76,7 +76,7 @@
                 "type": "Transform",
                 "angle": 0,
                 "pos": [0, 85, 0],
-                "scale": [10, 1]
+                "scale": [6, 1]
             },
             {
                 "type": "Sprite",
@@ -85,7 +85,7 @@
             {
                 "type": "Physics",
                 "body": "static",
-                "collider": [1, 7, 25, 13]
+                "collider": [1, 0, 25, 13]
             }
         ]
     ]

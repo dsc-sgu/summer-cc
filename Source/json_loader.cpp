@@ -60,9 +60,10 @@ load_lvl(std::string path)
             else if (component["type"] == "Physics")
             {
                 plat::Transform *trans = new_lvl.entities.back().getComponent<plat::Transform>();
+                plat::Sprite *spr = new_lvl.entities.back().getComponent<plat::Sprite>();
                 plat::Physics *cur_phys = new plat::Physics();
 
-                Rectangle collider = Rectangle {
+                cur_phys->collider = Rectangle {
                     component["collider"][0],
                     component["collider"][1],
                     component["collider"][2],
@@ -70,13 +71,15 @@ load_lvl(std::string path)
                 };
 
                 cur_phys->bodyDef.position.Set(
-                    trans->pos.x + collider.x,
-                    trans->pos.y + collider.y
+                    trans->pos.x,
+                    trans->pos.y
                 );
+
                 b2PolygonShape *dynamicBox = new b2PolygonShape();
+                
                 dynamicBox->SetAsBox(
-                    collider.width * trans->scale.x / 2.f,
-                    collider.height * trans->scale.y / 2.f
+                    cur_phys->collider.width * trans->scale.x / 2.f,
+                    cur_phys->collider.height * trans->scale.y / 2.f
                 );
 
                 if (component["body"] == "dynamic")
@@ -95,6 +98,7 @@ load_lvl(std::string path)
                     cur_phys->body = new_lvl.entities[new_lvl.cur_world].getComponent<plat::World>()->cur_world->CreateBody(&cur_phys->bodyDef);   
                     cur_phys->body->CreateFixture(dynamicBox,0.0f);
                 }
+                cur_phys->body->SetFixedRotation(true);
                 new_lvl.entities.back().components.push_back(cur_phys);
             }
             else if (component["type"] == "Camera")

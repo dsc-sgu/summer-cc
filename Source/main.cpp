@@ -64,13 +64,23 @@ main()
                     DrawTextureV(spr->texture, screen_pos, WHITE);
                     if (ph)
                     {
-                        // auto c = ph->body->GetFixtureList()->GetAABB(0).GetCenter();
+                        auto c = ph->body->GetFixtureList()->GetAABB(0).GetCenter();
                         auto a = ph->body->GetFixtureList()->GetAABB(0).lowerBound;
                         auto b = ph->body->GetFixtureList()->GetAABB(0).upperBound;
+                        Vector2 screen_pos = {
+                            (c.x - cam_t->pos.x) * cam->scale.x,
+                            (cam_t->pos.y - c.y) * cam->scale.y
+                        };
+                        screen_pos += screen_size * 0.5f;
+                        screen_pos -= Vector2 {
+                            (float) b.x - a.x,
+                            (float) b.y - a.y
+                        } * 0.5f;
                         DrawRectangleLines(
-                            ph->body->GetPosition().x, ph->body->GetPosition().y,
-                            b.x - a.x,
-                            b.y - a.y, RED
+                            screen_pos.x, screen_pos.y,
+                            b.x - a.x + 1,
+                            b.y - a.y + 1,
+                            RED
                         );
                     }
                 }

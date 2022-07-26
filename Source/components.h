@@ -100,6 +100,7 @@ class Physics : public Component
 public:
     b2BodyDef bodyDef;
     b2Body * body;
+    Rectangle collider;
 
     void update(float dt, Entity_id parent_id, Storage &storage) override;
     std::string get_component_type() override;
@@ -110,7 +111,6 @@ class World : public Component
 public:
     b2World *cur_world;
     b2TimeStep time_settings;
-
 
     World(b2Vec2 gravity, float timestep = 1.0f/60.0f, int32 vel_it = 6, int32 pos_it = 2);
     void update(float dt, Entity_id parent_id, Storage &storage) override;
