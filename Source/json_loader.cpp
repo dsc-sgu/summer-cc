@@ -60,15 +60,24 @@ load_lvl(std::string path)
             else if (component["type"] == "Physics")
             {
                 plat::Transform *trans = new_lvl.entities.back().getComponent<plat::Transform>();
-                plat::Sprite *spr = new_lvl.entities.back().getComponent<plat::Sprite>();
-
                 plat::Physics *cur_phys = new plat::Physics();
 
-                int sprite_width = spr->image.width * trans->scale.x;
-                int sprite_height = spr->image.height * trans->scale.y;
-                cur_phys->bodyDef.position.Set(trans->pos.x, trans->pos.y);
+                Rectangle collider = Rectangle {
+                    component["collider"][0],
+                    component["collider"][1],
+                    component["collider"][2],
+                    component["collider"][3]
+                };
+
+                cur_phys->bodyDef.position.Set(
+                    trans->pos.x + collider.x,
+                    trans->pos.y + collider.y
+                );
                 b2PolygonShape *dynamicBox = new b2PolygonShape();
-                dynamicBox->SetAsBox(sprite_width / 2, sprite_height / 2);
+                dynamicBox->SetAsBox(
+                    collider.width * trans->scale.x / 2.f,
+                    collider.height * trans->scale.y / 2.f
+                );
 
                 if (component["body"] == "dynamic")
                 {

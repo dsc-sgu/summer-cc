@@ -38,6 +38,7 @@ main()
                 if (spr)
                 {
                     plat::Transform *t = draw_queue[i]->getComponent<plat::Transform>();
+                    plat::Physics *ph = draw_queue[i]->getComponent<plat::Physics>();
 
                     Vector2 screen_pos = {
                         (t->pos.x - cam_t->pos.x) * cam->scale.x,
@@ -61,6 +62,17 @@ main()
                     }
 
                     DrawTextureV(spr->texture, screen_pos, WHITE);
+                    if (ph)
+                    {
+                        // auto c = ph->body->GetFixtureList()->GetAABB(0).GetCenter();
+                        auto a = ph->body->GetFixtureList()->GetAABB(0).lowerBound;
+                        auto b = ph->body->GetFixtureList()->GetAABB(0).upperBound;
+                        DrawRectangleLines(
+                            ph->body->GetPosition().x, ph->body->GetPosition().y,
+                            b.x - a.x,
+                            b.y - a.y, RED
+                        );
+                    }
                 }
             }
         }
