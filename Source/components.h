@@ -81,6 +81,7 @@ public:
     int speed;
     bool is_flying = false;
     bool is_waiting = true;
+    bool is_right = true;
     void update(float dt, Entity_id parent_id, Storage &storage) override;
     std::string get_component_type() override;
 };

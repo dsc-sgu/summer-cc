@@ -13,12 +13,12 @@
             {
                 "type": "Transform",
                 "angle": 0,
-                "pos": [0, 0, 0],
+                "pos": [0, 100, 0],
                 "scale": [1, 1]
             },
             {
                 "type": "Camera",
-                "scale": [1, 1]
+                "scale": [2, 2]
             }
         ],
         [
@@ -59,6 +59,22 @@
                 "angle": 0,
                 "pos": [0, 0, 0],
                 "scale": [50, 1]
+            },
+            {
+                "type": "Sprite",
+                "path": "Assets/Textures/Ground.png"
+            },
+            {
+                "type": "Physics",
+                "body": "static"
+            }
+        ],
+        [
+            {
+                "type": "Transform",
+                "angle": 0,
+                "pos": [-250, 85, 0],
+                "scale": [10, 1]
             },
             {
                 "type": "Sprite",

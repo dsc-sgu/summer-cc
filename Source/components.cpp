@@ -54,62 +54,88 @@ Player_control::update(float dt, int parent_id, Storage &storage)
 {
     auto cur_transform = storage.entities[parent_id].getComponent<Transform>();
     auto cur_physics = storage.entities[parent_id].getComponent<Physics>();
+    auto cur_sprite = storage.entities[parent_id].getComponent<Sprite>();
+    float impulse = cur_physics->body->GetMass()* speed;
     b2Vec2 velocity = cur_physics->body->GetLinearVelocity();
+
     if (!is_waiting && velocity.y < 0)
-    {
         is_waiting = true;
-        cur_physics->body->SetGravityScale(1.0f);
-    }
     else if (is_waiting && velocity.y > -0.5f)
-    {
         is_flying = false;
-        cur_physics->body->SetGravityScale(1.0f);
-    }
+    
     if(IsKeyPressed(KEY_LEFT_SHIFT))
         cur_physics->body->SetGravityScale(0.1f);
+     if(IsKeyReleased(KEY_LEFT_SHIFT))
+        cur_physics->body->SetGravityScale(1.0f);
     if (IsKeyDown(KEY_W))
     {
         if (!is_flying && cur_physics->body->GetLinearVelocity().y > -0.1)
         {
-        is_flying = true;
-        is_waiting = false;
-        // DON'T TOUCH NUMBER, IT'S MAGICAL(you can increase it, but don't decrease it)
-        float impulse = cur_physics->body->GetMass() * speed * 50;
-        cur_physics->body->ApplyLinearImpulse(
-            b2Vec2(velocity.x, impulse ),
-            cur_physics->body->GetWorldCenter(), true);
+            is_flying = true;
+            is_waiting = false;
+            // DON'T TOUCH NUMBER, IT'S MAGICAL(you can increase it, but don't decrease it)
+            //impulse *= 50;
+            cur_physics->body->ApplyLinearImpulse(
+                b2Vec2(velocity.x, impulse),
+                cur_physics->body->GetWorldCenter(), true
+            );
         }
     }
     if (IsKeyDown(KEY_S))
     {
-        cur_physics->bodyDef.position.y -=speed * dt;
-        cur_transform->pos.y -= speed * dt;
+        impulse *= -50;
+        cur_physics->body->ApplyLinearImpulse(
+            b2Vec2(velocity.x * cur_physics->body->GetMass(), impulse),
+            cur_physics->body->GetWorldCenter(), true
+        );
     }
     if (IsKeyDown(KEY_A))
     {
         // DON'T TOUCH NUMBER, IT'S MAGICAL(you can increase it, but don't decrease it)
-        float impulse = -cur_physics->body->GetMass()*speed / 100;
+        impulse /= 100;
         cur_physics->body->ApplyLinearImpulse(
-            b2Vec2(impulse, 0),
-            cur_physics->body->GetWorldCenter(), true);
+            b2Vec2(-impulse, 0),
+            cur_physics->body->GetWorldCenter(), true
+        );
+        
+        if (is_right && velocity.x < - 0.1 )
+        {
+            is_right = false;
+            UnloadTexture(cur_sprite->texture);
+            ImageFlipHorizontal(&cur_sprite->image);
+            Image image = ImageCopy(cur_sprite->image);
+            cur_sprite->texture = LoadTextureFromImage(image);
+        }
     }
     else if (IsKeyReleased(KEY_A))
     {
         velocity.x = 0.f;
         cur_physics->body->SetLinearVelocity(velocity);
+        cur_physics->body->SetAngularVelocity(0);
     }
     if (IsKeyDown(KEY_D))
     {
         // DON'T TOUCH NUMBER, IT'S MAGICAL(you can increase it, but don't decrease it)
-        float impulse = cur_physics->body->GetMass()* speed /100;
+        impulse /= 100;
         cur_physics->body->ApplyLinearImpulse(
             b2Vec2(impulse, 0),
-            cur_physics->body->GetWorldCenter(), true);
+            cur_physics->body->GetWorldCenter(), true
+        );
+        
+        if (!is_right && velocity.x >= 0 )
+        {
+            is_right = true;
+            UnloadTexture(cur_sprite->texture);
+            ImageFlipHorizontal(&cur_sprite->image);
+            Image image = ImageCopy(cur_sprite->image);
+            cur_sprite->texture = LoadTextureFromImage(image);
+        }
     }
     else if (IsKeyReleased(KEY_D))
     {
         velocity.x = 0.f;
         cur_physics->body->SetLinearVelocity(velocity);
+        cur_physics->body->SetAngularVelocity(0);
     }
 }
 
