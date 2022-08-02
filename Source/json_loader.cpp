@@ -87,8 +87,8 @@ load_lvl(std::string path)
 
                     b2FixtureDef *fixtureDef = new b2FixtureDef();
                     fixtureDef->shape = shape;
-                    fixtureDef->density = 2.0f;
-                    fixtureDef->friction = 0.3f;
+                    fixtureDef->density = 0.15f;
+                    fixtureDef->friction = 0.6f;
                     cur_phys->body->CreateFixture(fixtureDef);
                 }
                 else // static

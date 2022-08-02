@@ -130,6 +130,10 @@ Player_control::update(float dt, int parent_id, Storage &storage)
         //     cur_sprite->texture = LoadTextureFromImage(image);
         // }
     }
+    else if(IsKeyReleased(KEY_A))
+    {
+        cur_physics->body->SetLinearVelocity({0, cur_physics->body->GetLinearVelocity().y});
+    }
     else if(IsKeyReleased(KEY_D))
     {
         cur_physics->body->SetLinearVelocity({0, cur_physics->body->GetLinearVelocity().y});
@@ -155,25 +159,26 @@ Player_control::update(float dt, int parent_id, Storage &storage)
     {
         cur_physics->body->SetLinearVelocity({0, cur_physics->body->GetLinearVelocity().y});
     }
+    // 
+    // 
     b2Vec2 old_movement = cur_physics->body->GetLinearVelocity();
-    b2Vec2 movement = {0, -cur_physics->body->GetMass()};
+    b2Vec2 movement = {0, 0};
     if(isPressed[2] > isPressed[3])
-        movement.x = std::min(old_movement.x, -speed * dt);
+        movement.x = std::min(old_movement.x, -float(speed));
      else if(isPressed[2] < isPressed[3])
-        movement.x = std::max(old_movement.x, speed * dt);
+        movement.x = std::max(old_movement.x, float(speed));
     if(isPressed[0] > isPressed[1])
-        movement.y += speed * dt * 100000;
+        movement.y = float(speed) * 6;
      else if (isPressed[0] < isPressed[1])
-        movement.y -= speed * dt * 100000;
+        movement.y = - float(speed) ;
     //movement.x*=cur_physics->body->GetMass();
-    if(is_flying)
+    if(is_flying && !is_waiting)
         movement.y = std::max(movement.y, old_movement.y);
     else 
-       movement.y = std::min({-cur_physics->body->GetMass(), -movement.y, old_movement.y});
-    movement.y*= 10;
-    movement.x *= 1000;
-    std::cout << movement.x << ' ' << movement.y << '\n';
+       movement.y = std::min({-cur_physics->body->GetMass(), movement.y, old_movement.y});
+    std::cout << movement.x << ' ' << movement.y <<' '<< cur_physics->body->GetMass() << '\n';
     cur_physics->body->ApplyLinearImpulseToCenter(movement, true);
+    
 }
 
 std::string
