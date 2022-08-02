@@ -49,6 +49,10 @@
                 "path": "Assets/Textures/King_stay.png"
             },
             {
+                "type": "Animation",
+                "path": "Assets/Textures/King_run.png"
+            },
+            {
                 "type": "Physics",
                 "body": "dynamic",
                 "collider": [21, 15, 21, 28]

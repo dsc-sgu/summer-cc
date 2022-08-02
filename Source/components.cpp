@@ -65,6 +65,53 @@ void
 Sprite::update(float dt, Entity_id parent_id, Storage &storage)
 {}
 
+Animation::Animation(const std::string &path)
+{
+    animFrames = 8;
+    currtAnimFrame = 0;
+    frameCounter = 0;
+    frameDelay = 8;
+    nextFrameDataOffset = 0;
+
+    base_image = LoadImage(path);
+}
+
+std::string
+Animation::get_component_type()
+{
+    return std::type_index(typeid(Animation)).name();
+}
+
+void
+Animation::update(float dt, Entity_id parent_id, Storage &storage)
+{}
+Image
+Animation::changeImage(int &currAnimFrame, int &frameCounter, const int &frameDelay)
+{
+    Image image = ImageCopy(base_image);
+
+    if(frameCounter >= frameDelay)
+    {
+        if (currAnimFrame < animFrames)
+        {
+            currAnimFrame = 0;
+        }
+        float x = 78 * currAnimFrame;
+        float y = 0;
+        std::cout << std::endl << x << " " << y << " " << " " << base_image.width << " " << base_image.height << std::endl;
+
+        ImageCrop(&image, {x, y, 58, 78});
+        
+        frameCounter = 0;
+        currAnimFrame++;
+    }
+    /*std::cout << std::endl << "currAnimFrame = " << currAnimFrame 
+        << " frameCounter = " << frameCounter 
+        << " frameDelay = " << frameDelay 
+        << " animFrames = " << animFrames << std::endl <<std::endl; */
+    return image;
+}
+
 std::string
 Player_control::get_component_type()
 {
@@ -76,7 +123,6 @@ Player_control::update(float dt, int parent_id, Storage &storage)
 {
     auto cur_physics = storage.entities[parent_id].getComponent<Physics>();
     b2Vec2 velocity = cur_physics->body->GetLinearVelocity();
-    std::cout << velocity.x << '\n';
 
     if (!is_waiting && velocity.y < 0)
     {

@@ -109,6 +109,13 @@ load_lvl(std::string path)
                 new_lvl.entities.back().components.push_back(cam);
                 new_lvl.cur_camera = new_lvl.entities.size() - 1;
             }
+            else if(component["type"] == "Animation")
+            {
+                new_lvl.entities.back().components.push_back(
+                    new plat::Animation(std::string(component["path"]))
+                );
+
+            }
         }
     }
 

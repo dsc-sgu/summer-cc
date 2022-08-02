@@ -5,6 +5,8 @@
 #include "json_loader.h"
 #include "render.h"
 
+int frameCounter = 0;
+
 int
 main()
 {
@@ -27,16 +29,26 @@ main()
 
         plat::Camera *cam = storage.entities[storage.cur_camera].getComponent<plat::Camera>();
         plat::Transform *cam_t = storage.entities[storage.cur_camera].getComponent<plat::Transform>();
-
+        frameCounter++;
         BeginDrawing();
         ClearBackground(BLACK);
         for (int i = 0; i < draw_queue.size(); ++i)
         {
             for (int j = 0; j < draw_queue[i]->components.size(); ++j)
             {
+                plat::Animation *anim = draw_queue[i]->getComponent<plat::Animation>();
                 plat::Sprite *spr = draw_queue[i]->getComponent<plat::Sprite>();
                 if (spr)
                 {
+                    if(anim)
+                    {
+                        // spr->image = anim->changeImage(anim->currtAnimFrame, frameCounter, anim->frameDelay);
+                        // spr->image = ImageCopy()
+                        UnloadTexture(spr->texture);
+                        Image image = ImageCopy(spr->image);
+                        ImageResizeNN(&image, 100, 100);
+                        spr->texture = LoadTextureFromImage(image);
+                    }
                     plat::Transform *t = draw_queue[i]->getComponent<plat::Transform>();
                     plat::Physics *ph = draw_queue[i]->getComponent<plat::Physics>();
 
@@ -58,7 +70,7 @@ main()
                         UnloadTexture(spr->texture);
                         Image image = ImageCopy(spr->image);
                         ImageResizeNN(&image, sprite_width, sprite_height);
-                        spr->texture = LoadTextureFromImage(image);
+                        spr->texture = LoadTextureFromImage(image);   
                     }
 
                     DrawTextureV(spr->texture, screen_pos, WHITE);

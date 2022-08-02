@@ -64,6 +64,25 @@ public:
     void update(float dt, Entity_id parent_id, Storage &storage) override;
 };
 
+class Animation : public Component 
+{
+public:
+    int animFrames;
+    int currtAnimFrame;
+    int frameCounter;
+    int frameDelay;
+    unsigned int nextFrameDataOffset;
+    
+    Image base_image;
+
+    Animation(const std::string& path);
+
+    Image changeImage(int &currAnimFrame, int &frameCounter, const int &frameDelay);
+
+    std::string get_component_type() override;
+    void update(float dt, Entity_id parent_id, Storage &storage) override;
+};
+
 class Transform : public Component 
 {
 public:
