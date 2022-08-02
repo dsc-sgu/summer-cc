@@ -75,49 +75,45 @@ void
 Player_control::update(float dt, int parent_id, Storage &storage)
 {
     auto cur_physics = storage.entities[parent_id].getComponent<Physics>();
-    float impulse = cur_physics->body->GetMass() * speed;
     b2Vec2 velocity = cur_physics->body->GetLinearVelocity();
+    std::cout << velocity.x << '\n';
 
     if (!is_waiting && velocity.y < 0)
+    {
         is_waiting = true;
+    }
     else if (is_waiting && velocity.y > -0.5f)
+    {
         is_flying = false;
-    
+    }
+
     if(IsKeyPressed(KEY_LEFT_SHIFT))
         cur_physics->body->SetGravityScale(0.1f);
-     if(IsKeyReleased(KEY_LEFT_SHIFT))
+    if(IsKeyReleased(KEY_LEFT_SHIFT))
         cur_physics->body->SetGravityScale(1.0f);
-    if (IsKeyDown(KEY_W))
+    if (IsKeyDown(KEY_SPACE) && !is_flying && cur_physics->body->GetLinearVelocity().y > -0.1)
     {
-        if (!is_flying && cur_physics->body->GetLinearVelocity().y > -0.1)
-        {
-            is_flying = true;
-            is_waiting = false;
-            // DON'T TOUCH NUMBER, IT'S MAGICAL(you can increase it, but don't decrease it)
-            // impulse *= 50;
-            cur_physics->body->ApplyLinearImpulse(
-                b2Vec2(velocity.x, impulse),
-                cur_physics->body->GetWorldCenter(), true
-            );
-        }
+        is_flying = true;
+        is_waiting = false;
+        cur_physics->body->ApplyLinearImpulseToCenter(
+            b2Vec2(0, cur_physics->body->GetMass() * 5000 * dt),
+            true
+        );
     }
     if (IsKeyDown(KEY_S))
     {
-        impulse *= -50;
-        cur_physics->body->ApplyLinearImpulse(
-            b2Vec2(velocity.x * cur_physics->body->GetMass(), impulse),
-            cur_physics->body->GetWorldCenter(), true
+        cur_physics->body->ApplyLinearImpulseToCenter(
+            b2Vec2(0, -cur_physics->body->GetMass() * dt),
+            true
         );
     }
     if (IsKeyDown(KEY_A))
     {
-        // DON'T TOUCH NUMBER, IT'S MAGICAL(you can increase it, but don't decrease it)
-        impulse /= 100;
-        cur_physics->body->ApplyLinearImpulse(
-            b2Vec2(-impulse, 0),
-            cur_physics->body->GetWorldCenter(), true
+        cur_physics->body->ApplyLinearImpulseToCenter(
+            b2Vec2(-cur_physics->body->GetMass() * speed * dt, 0),
+            true
         );
-        
+  
         // if (is_right && velocity.x < - 0.1 )
         // {
         //     is_right = false;
@@ -127,19 +123,11 @@ Player_control::update(float dt, int parent_id, Storage &storage)
         //     cur_sprite->texture = LoadTextureFromImage(image);
         // }
     }
-    else if (IsKeyReleased(KEY_A))
-    {
-        velocity.x = 0.f;
-        cur_physics->body->SetLinearVelocity(velocity);
-        cur_physics->body->SetAngularVelocity(0);
-    }
     if (IsKeyDown(KEY_D))
     {
-        // DON'T TOUCH NUMBER, IT'S MAGICAL(you can increase it, but don't decrease it)
-        impulse /= 100;
-        cur_physics->body->ApplyLinearImpulse(
-            b2Vec2(impulse, 0),
-            cur_physics->body->GetWorldCenter(), true
+        cur_physics->body->ApplyLinearImpulseToCenter(
+            b2Vec2(cur_physics->body->GetMass() * speed * dt, 0),
+            true
         );
         
         // if (!is_right && velocity.x >= 0 )
@@ -150,12 +138,6 @@ Player_control::update(float dt, int parent_id, Storage &storage)
         //     Image image = ImageCopy(cur_sprite->image);
         //     cur_sprite->texture = LoadTextureFromImage(image);
         // }
-    }
-    else if (IsKeyReleased(KEY_D))
-    {
-        velocity.x = 0.f;
-        cur_physics->body->SetLinearVelocity(velocity);
-        cur_physics->body->SetAngularVelocity(0);
     }
 }
 
@@ -218,8 +200,8 @@ World::World(b2Vec2 gravity, float timestep, int32 vel_it, int32 pos_it)
 {
     b2World *world = new b2World(gravity);
     time_settings.dt = timestep;
-    time_settings.positionIterations = pos_it;
     time_settings.velocityIterations = vel_it;
+    time_settings.positionIterations = pos_it;
     cur_world = world; 
 }
 
@@ -232,7 +214,7 @@ World::get_component_type()
 void
 World::update(float dt, Entity_id parent_id, Storage &storage)
 {
-    cur_world->Step(time_settings.dt, time_settings.velocityIterations, time_settings.positionIterations);
+    cur_world->Step(dt, time_settings.velocityIterations, time_settings.positionIterations);
 }
 
 }

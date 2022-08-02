@@ -18,17 +18,16 @@ load_lvl(std::string path)
             if (component["type"] == "World")
             {
                 b2Vec2 gravity(component["gravity"][0], component["gravity"][1]);
-                float time = component["timeStep"];
+                float timestep = component["timeStep"];
                 int32 velocityIterations = component["Velocity"];
                 int32 positionIterations = component ["Position"];
                 plat::World *Cur_World = new plat::World(
                     gravity,
-                    time,
+                    timestep,
                     velocityIterations,
                     positionIterations);
                 new_lvl.entities.back().components.push_back(Cur_World);
                 new_lvl.cur_world = new_lvl.entities.size() - 1;
-
             }
             else if (component["type"] == "Transform")
             {
@@ -60,7 +59,6 @@ load_lvl(std::string path)
             else if (component["type"] == "Physics")
             {
                 plat::Transform *trans = new_lvl.entities.back().getComponent<plat::Transform>();
-                plat::Sprite *spr = new_lvl.entities.back().getComponent<plat::Sprite>();
                 plat::Physics *cur_phys = new plat::Physics();
 
                 cur_phys->collider = Rectangle {
@@ -75,9 +73,9 @@ load_lvl(std::string path)
                     trans->pos.y
                 );
 
-                b2PolygonShape *dynamicBox = new b2PolygonShape();
+                b2PolygonShape *shape = new b2PolygonShape();
                 
-                dynamicBox->SetAsBox(
+                shape->SetAsBox(
                     cur_phys->collider.width * trans->scale.x / 2.f,
                     cur_phys->collider.height * trans->scale.y / 2.f
                 );
@@ -88,15 +86,15 @@ load_lvl(std::string path)
                     cur_phys->body = new_lvl.entities[new_lvl.cur_world].getComponent<plat::World>()->cur_world->CreateBody(&cur_phys->bodyDef);
 
                     b2FixtureDef *fixtureDef = new b2FixtureDef();
-                    fixtureDef->shape = dynamicBox;
-                    fixtureDef->density = 1.0f;
+                    fixtureDef->shape = shape;
+                    fixtureDef->density = 2.0f;
                     fixtureDef->friction = 0.3f;
                     cur_phys->body->CreateFixture(fixtureDef);
                 }
-                else
+                else // static
                 {
                     cur_phys->body = new_lvl.entities[new_lvl.cur_world].getComponent<plat::World>()->cur_world->CreateBody(&cur_phys->bodyDef);   
-                    cur_phys->body->CreateFixture(dynamicBox,0.0f);
+                    cur_phys->body->CreateFixture(shape, 0.0f);
                 }
                 cur_phys->body->SetFixedRotation(true);
                 new_lvl.entities.back().components.push_back(cur_phys);

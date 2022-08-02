@@ -3,7 +3,7 @@
         [
             {
                 "type": "World",
-                "gravity": [0.0, -10.0],
+                "gravity": [0.0, -100.0],
                 "timeStep": 0.08,
                 "Velocity": 6,
                 "Position": 2
