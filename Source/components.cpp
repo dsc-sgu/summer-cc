@@ -76,29 +76,36 @@ Player_control::update(float dt, int parent_id, Storage &storage)
 {
     auto cur_physics = storage.entities[parent_id].getComponent<Physics>();
     auto cur_world = storage.entities[storage.cur_world].getComponent<World>();
-    b2Vec2 velocity = cur_physics->body->GetLinearVelocity();
     bool isPressed[4]= {false};
    
     //std::cout << velocity.x << '\n';
 
-    if (!is_waiting && velocity.y < -0.1)
+    b2Vec2 velocity = cur_physics->body->GetLinearVelocity();
+    std::cout << velocity.x << ' ' << velocity.y <<' '<< "Velocity" << '\n';
+
+
+    if (is_flying && is_jumping && velocity.y < 0.1)
     {
-        is_waiting = true;
+        is_jumping = false;
+        is_falling = true;
         isPressed[0] = false;
     }
-    else if (is_waiting && velocity.y > -0.5f)
+    else if (is_flying && is_falling && velocity.y > -0.1)
     {
         is_flying = false;
+        is_falling = false;
+        is_waiting = true;
     }
 
     if(IsKeyPressed(KEY_LEFT_SHIFT))
         cur_physics->body->SetGravityScale(0.1f);
     if(IsKeyReleased(KEY_LEFT_SHIFT))
         cur_physics->body->SetGravityScale(1.0f);
-    if (IsKeyDown(KEY_SPACE) && !is_flying && cur_physics->body->GetLinearVelocity().y > -0.1)
+    if (IsKeyDown(KEY_SPACE) && is_waiting && cur_physics->body->GetLinearVelocity().y > -0.1)
     {
         is_flying = true;
         is_waiting = false;
+        is_jumping = true;
         isPressed[0] = true;
         // cur_physics->body->ApplyLinearImpulseToCenter(
             // b2Vec2(0, cur_physics->body->GetMass() * 5000 * dt),
@@ -164,21 +171,27 @@ Player_control::update(float dt, int parent_id, Storage &storage)
     b2Vec2 old_movement = cur_physics->body->GetLinearVelocity();
     b2Vec2 movement = {0, 0};
     if(isPressed[2] > isPressed[3])
-        movement.x = std::min(old_movement.x, -float(speed));
+        movement.x = std::min(old_movement.x, -float(speed))*1.5f;
      else if(isPressed[2] < isPressed[3])
-        movement.x = std::max(old_movement.x, float(speed));
+        movement.x = std::max(old_movement.x, float(speed))*1.2f;
     if(isPressed[0] > isPressed[1])
-        movement.y = float(speed) * 6;
+        movement.y = std::max(float(speed) * speed , old_movement.y - float(speed) * speed)*32.81f;
+       // movement.y = float(speed) * speed * 9.81f;
      else if (isPressed[0] < isPressed[1])
         movement.y = - float(speed) ;
     //movement.x*=cur_physics->body->GetMass();
-    if(is_flying && !is_waiting)
-        movement.y = std::max(movement.y, old_movement.y);
-    else 
-       movement.y = std::min({-cur_physics->body->GetMass(), movement.y, old_movement.y});
+    if(is_waiting) {}
+    else if(is_jumping)
+         movement.y = std::max(movement.y, old_movement.y - cur_physics->body->GetMass()* 9.81f *1.33f);
+    else if (is_falling)
+         movement.y = std::min(movement.y, old_movement.y -cur_physics->body->GetMass()*13.33f);
+    //else //if (is_waiting && is_flying)
+      //  movement.y = std::min(movement.y - cur_physics->body->GetMass()*9.81f, old_movement.y);
     std::cout << movement.x << ' ' << movement.y <<' '<< cur_physics->body->GetMass() << '\n';
     cur_physics->body->ApplyLinearImpulseToCenter(movement, true);
     
+    
+
 }
 
 std::string
