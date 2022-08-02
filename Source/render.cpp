@@ -9,7 +9,11 @@ create_draw_order(std::vector<Entity> &entities)
     std::vector<Entity *> draw_queue;
     for (int i = 0; i < entities.size(); ++i)
     {
-        draw_queue.push_back(&(entities[i]));
+        plat::Sprite *spr = entities[i].getComponent<Sprite>();
+        if (spr)
+        {
+            draw_queue.push_back(&(entities[i]));
+        }
     }
 
     std::sort(draw_queue.begin(), draw_queue.end(),

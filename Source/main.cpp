@@ -14,7 +14,7 @@ main()
 
     plat::Storage storage = load_lvl("Assets/Scenes/default.json");
     std::vector<plat::Entity *> draw_queue = create_draw_order(storage.entities);
-
+    
     while (!WindowShouldClose())
     {
         for (auto &entity : storage.entities)
@@ -38,13 +38,13 @@ main()
                 if (spr)
                 {
                     plat::Transform *t = draw_queue[i]->getComponent<plat::Transform>();
+                    plat::Physics *ph = draw_queue[i]->getComponent<plat::Physics>();
 
                     Vector2 screen_pos = {
                         (t->pos.x - cam_t->pos.x) * cam->scale.x,
                         (cam_t->pos.y - t->pos.y) * cam->scale.y
                     };
                     screen_pos += screen_size * 0.5f;
-
                     int sprite_width = spr->image.width * t->scale.x * cam->scale.x;
                     int sprite_height = spr->image.height * t->scale.y * cam->scale.y;
                     screen_pos -= Vector2 {
@@ -62,6 +62,27 @@ main()
                     }
 
                     DrawTextureV(spr->texture, screen_pos, WHITE);
+                    if (ph)
+                    {
+                        auto c = ph->body->GetFixtureList()->GetAABB(0).GetCenter();
+                        auto a = ph->body->GetFixtureList()->GetAABB(0).lowerBound;
+                        auto b = ph->body->GetFixtureList()->GetAABB(0).upperBound;
+                        Vector2 screen_pos = {
+                            (c.x - cam_t->pos.x) * cam->scale.x,
+                            (cam_t->pos.y - c.y) * cam->scale.y
+                        };
+                        screen_pos += screen_size * 0.5f;
+                        screen_pos -= Vector2 {
+                            (float) b.x - a.x,
+                            (float) b.y - a.y
+                        } * 0.5f;
+                        DrawRectangleLines(
+                            screen_pos.x, screen_pos.y,
+                            b.x - a.x + 1,
+                            b.y - a.y + 1,
+                            RED
+                        );
+                    }
                 }
             }
         }

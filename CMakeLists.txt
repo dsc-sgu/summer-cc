@@ -14,3 +14,4 @@ add_subdirectory (Dependencies)
 
 target_link_libraries (Game LINK_PRIVATE raylib-ext)
 target_link_libraries (Game LINK_PRIVATE JSON)
+target_link_libraries (Game LINK_PRIVATE box2d)

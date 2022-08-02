@@ -10,3 +10,6 @@
 [submodule "Dependencies/json"]
 	path = Dependencies/json
 	url = https://github.com/GDSC-Saratov/json.git
+[submodule "Dependencies/box2d"]
+	path = Dependencies/box2d
+	url = https://github.com/GDSC-Saratov/box2d.git
