@@ -6,6 +6,7 @@
 #include <typeindex>
 #include <raylib-ext.hpp>
 #include <box2d/box2d.h>
+#include <algorithm>
 
 namespace plat {
 
@@ -82,6 +83,8 @@ public:
     bool is_flying = false;
     bool is_waiting = true;
     bool is_right = true;
+    bool is_jumping = false;
+    bool is_falling = false;
     void update(float dt, Entity_id parent_id, Storage &storage) override;
     std::string get_component_type() override;
 };

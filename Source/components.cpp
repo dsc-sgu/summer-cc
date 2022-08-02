@@ -75,12 +75,16 @@ void
 Player_control::update(float dt, int parent_id, Storage &storage)
 {
     auto cur_physics = storage.entities[parent_id].getComponent<Physics>();
+    auto cur_world = storage.entities[storage.cur_world].getComponent<World>();
     b2Vec2 velocity = cur_physics->body->GetLinearVelocity();
-    std::cout << velocity.x << '\n';
+    bool isPressed[4]= {false};
+   
+    //std::cout << velocity.x << '\n';
 
-    if (!is_waiting && velocity.y < 0)
+    if (!is_waiting && velocity.y < -0.1)
     {
         is_waiting = true;
+        isPressed[0] = false;
     }
     else if (is_waiting && velocity.y > -0.5f)
     {
@@ -95,24 +99,27 @@ Player_control::update(float dt, int parent_id, Storage &storage)
     {
         is_flying = true;
         is_waiting = false;
-        cur_physics->body->ApplyLinearImpulseToCenter(
-            b2Vec2(0, cur_physics->body->GetMass() * 5000 * dt),
-            true
-        );
+        isPressed[0] = true;
+        // cur_physics->body->ApplyLinearImpulseToCenter(
+            // b2Vec2(0, cur_physics->body->GetMass() * 5000 * dt),
+            // true
+        // );
     }
     if (IsKeyDown(KEY_S))
     {
-        cur_physics->body->ApplyLinearImpulseToCenter(
-            b2Vec2(0, -cur_physics->body->GetMass() * dt),
-            true
-        );
+        isPressed[1] = true;
+        // cur_physics->body->ApplyLinearImpulseToCenter(
+            // b2Vec2(0, -cur_physics->body->GetMass() * dt),
+            // true
+        // );
     }
     if (IsKeyDown(KEY_A))
     {
-        cur_physics->body->ApplyLinearImpulseToCenter(
-            b2Vec2(-cur_physics->body->GetMass() * speed * dt, 0),
-            true
-        );
+        isPressed[2] = true;
+        // cur_physics->body->ApplyLinearImpulseToCenter(
+            // b2Vec2(-cur_physics->body->GetMass() * speed * dt, 0),
+            // true
+        // );
   
         // if (is_right && velocity.x < - 0.1 )
         // {
@@ -123,12 +130,17 @@ Player_control::update(float dt, int parent_id, Storage &storage)
         //     cur_sprite->texture = LoadTextureFromImage(image);
         // }
     }
+    else if(IsKeyReleased(KEY_D))
+    {
+        cur_physics->body->SetLinearVelocity({0, cur_physics->body->GetLinearVelocity().y});
+    }
     if (IsKeyDown(KEY_D))
     {
-        cur_physics->body->ApplyLinearImpulseToCenter(
-            b2Vec2(cur_physics->body->GetMass() * speed * dt, 0),
-            true
-        );
+        isPressed[3] = true;
+        //cur_physics->body->ApplyLinearImpulseToCenter(
+          //  b2Vec2(cur_physics->body->GetMass() * speed * dt, 0),
+            //true
+        //);
         
         // if (!is_right && velocity.x >= 0 )
         // {
@@ -139,6 +151,29 @@ Player_control::update(float dt, int parent_id, Storage &storage)
         //     cur_sprite->texture = LoadTextureFromImage(image);
         // }
     }
+    else if(IsKeyReleased(KEY_D))
+    {
+        cur_physics->body->SetLinearVelocity({0, cur_physics->body->GetLinearVelocity().y});
+    }
+    b2Vec2 old_movement = cur_physics->body->GetLinearVelocity();
+    b2Vec2 movement = {0, -cur_physics->body->GetMass()};
+    if(isPressed[2] > isPressed[3])
+        movement.x = std::min(old_movement.x, -speed * dt);
+     else if(isPressed[2] < isPressed[3])
+        movement.x = std::max(old_movement.x, speed * dt);
+    if(isPressed[0] > isPressed[1])
+        movement.y += speed * dt * 100000;
+     else if (isPressed[0] < isPressed[1])
+        movement.y -= speed * dt * 100000;
+    //movement.x*=cur_physics->body->GetMass();
+    if(is_flying)
+        movement.y = std::max(movement.y, old_movement.y);
+    else 
+       movement.y = std::min({-cur_physics->body->GetMass(), -movement.y, old_movement.y});
+    movement.y*= 10;
+    movement.x *= 1000;
+    std::cout << movement.x << ' ' << movement.y << '\n';
+    cur_physics->body->ApplyLinearImpulseToCenter(movement, true);
 }
 
 std::string
