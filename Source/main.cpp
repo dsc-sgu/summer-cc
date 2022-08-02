@@ -40,15 +40,6 @@ main()
                 plat::Sprite *spr = draw_queue[i]->getComponent<plat::Sprite>();
                 if (spr)
                 {
-                    if(anim)
-                    {
-                        // spr->image = anim->changeImage(anim->currtAnimFrame, frameCounter, anim->frameDelay);
-                        // spr->image = ImageCopy()
-                        UnloadTexture(spr->texture);
-                        Image image = ImageCopy(spr->image);
-                        ImageResizeNN(&image, 100, 100);
-                        spr->texture = LoadTextureFromImage(image);
-                    }
                     plat::Transform *t = draw_queue[i]->getComponent<plat::Transform>();
                     plat::Physics *ph = draw_queue[i]->getComponent<plat::Physics>();
 
