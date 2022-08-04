@@ -84,7 +84,24 @@ Animation::get_component_type()
 
 void
 Animation::update(float dt, Entity_id parent_id, Storage &storage)
-{}
+{
+    plat::Sprite *spr = storage.entities[parent_id].getComponent<Sprite>();
+
+    spr->image = ImageCopy(base_image);
+    if (frameCounter >= frameDelay)
+    {
+        float x = 78 * ((frameCounter / animFrames) % animFrames);
+        float y = 0;
+        std::cout << std::endl << x << " " << y << " " << " " << base_image.width << " " << base_image.height << std::endl;
+
+        ImageCrop(&spr->image, {x, y, 58, 78});
+    }
+    ++frameCounter;
+
+    UnloadTexture(spr->texture);
+    spr->texture = LoadTextureFromImage(spr->image);
+}
+
 Image
 Animation::changeImage(int &currAnimFrame, int &frameCounter, const int &frameDelay)
 {
@@ -96,12 +113,14 @@ Animation::changeImage(int &currAnimFrame, int &frameCounter, const int &frameDe
         {
             currAnimFrame = 0;
         }
-        float x = 78 * currAnimFrame;
+
+        float x = 58 * currAnimFrame;
         float y = 0;
         std::cout << std::endl << x << " " << y << " " << " " << base_image.width << " " << base_image.height << std::endl;
 
+        puts("ABOBA");
         ImageCrop(&image, {x, y, 58, 78});
-        
+
         frameCounter = 0;
         currAnimFrame++;
     }

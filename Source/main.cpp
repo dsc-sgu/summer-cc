@@ -40,14 +40,6 @@ main()
                 plat::Sprite *spr = draw_queue[i]->getComponent<plat::Sprite>();
                 if (spr)
                 {
-                    if(anim)
-                    {
-                        // spr->image = anim->changeImage(anim->currtAnimFrame, frameCounter, anim->frameDelay);
-                        // spr->image = ImageCopy()
-                        UnloadTexture(spr->texture);
-                        Image image = ImageCopy(spr->image);
-                        spr->texture = LoadTextureFromImage(image);
-                    }
                     plat::Transform *t = draw_queue[i]->getComponent<plat::Transform>();
                     plat::Physics *ph = draw_queue[i]->getComponent<plat::Physics>();
 
@@ -84,13 +76,13 @@ main()
                         };
                         screen_pos += screen_size * 0.5f;
                         screen_pos -= Vector2 {
-                            (float) b.x - a.x,
-                            (float) b.y - a.y
+                            (float) (b.x - a.x) * cam->scale.x,
+                            (float) (b.y - a.y) * cam->scale.x
                         } * 0.5f;
                         DrawRectangleLines(
                             screen_pos.x, screen_pos.y,
-                            b.x - a.x + 1,
-                            b.y - a.y + 1,
+                            (b.x - a.x + 1) * cam->scale.x,
+                            (b.y - a.y + 1) * cam->scale.y,
                             RED
                         );
                     }
