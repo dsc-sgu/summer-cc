@@ -149,7 +149,7 @@ Animation::update(float dt, Entity_id parent_id, Storage &storage)
             float x = 78 * ((frameCounter / animFrames) % animFrames);
             float y = 0;
 
-            ImageCrop(&spr->image, {x, y, 58, 78});
+            ImageCrop(&spr->image, {x, y, 78, 58});
         }
         ++frameCounter;
     }
@@ -160,7 +160,7 @@ Animation::update(float dt, Entity_id parent_id, Storage &storage)
             float x = 78 * ((frameCounter / animFrames) % animFrames);
             float y = 0;
             
-            ImageCrop(&spr->image, {x, y, 58, 78});
+            ImageCrop(&spr->image, {x, y, 78, 58});
         }
         
         ImageFlipHorizontal(&spr->image);
