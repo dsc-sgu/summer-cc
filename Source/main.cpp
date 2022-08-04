@@ -46,7 +46,6 @@ main()
                         // spr->image = ImageCopy()
                         UnloadTexture(spr->texture);
                         Image image = ImageCopy(spr->image);
-                        ImageResizeNN(&image, 100, 100);
                         spr->texture = LoadTextureFromImage(image);
                     }
                     plat::Transform *t = draw_queue[i]->getComponent<plat::Transform>();
