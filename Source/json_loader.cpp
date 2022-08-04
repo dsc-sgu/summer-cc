@@ -109,12 +109,16 @@ load_lvl(std::string path)
                 new_lvl.entities.back().components.push_back(cam);
                 new_lvl.cur_camera = new_lvl.entities.size() - 1;
             }
+            else if(component["type"] == "Animation_control")
+            {
+                new_lvl.entities.back().components.push_back(
+                    new plat::Animation_control(std::string(component["path_stay"]), 
+                    std::string(component["path_run"]), std::string(component["path_fly"])));
+            }
             else if(component["type"] == "Animation")
             {
                 new_lvl.entities.back().components.push_back(
-                    new plat::Animation(std::string(component["path"]))
-                );
-
+                    new plat::Animation(std::string(component["path"])));
             }
         }
     }

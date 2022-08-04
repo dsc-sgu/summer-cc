@@ -65,15 +65,54 @@ void
 Sprite::update(float dt, Entity_id parent_id, Storage &storage)
 {}
 
-Animation::Animation(const std::string &path)
+Animation_control::Animation_control(const std::string& path_stay, const std::string& path_run, const std::string& path_fly)
+{
+    stay = LoadImage(path_stay);
+    run = LoadImage(path_run);
+    fly = LoadImage(path_fly);
+}
+
+std::string
+Animation_control::get_component_type()
+{
+    return std::type_index(typeid(Animation_control)).name();
+}
+
+void
+Animation_control::update(float dt, Entity_id parent_id, Storage &storage)
+{
+    plat::Animation *anim = storage.entities[parent_id].getComponent<Animation>();
+    plat::Player_control *plr_cntrl = storage.entities[parent_id].getComponent<Player_control>();
+    
+    //std::cout << std::endl << "right =  " << plr_cntrl->is_right << std::endl;
+    //std::cout << std::endl << "waiting = " << plr_cntrl->is_waiting << std::endl;
+    //std::cout << std::endl << "flying = " << plr_cntrl->is_flying << std::endl;
+
+    if(plr_cntrl->is_flying)
+    {
+        anim->base_image = ImageCopy(fly);
+    }
+    else if(plr_cntrl->is_right)
+    {
+        anim->base_image = ImageCopy(run);
+    }
+    else if(!plr_cntrl->is_right)
+    {
+        anim->base_image = ImageCopy(run);
+    }
+    else if(plr_cntrl->is_waiting)
+    {
+        anim->base_image = ImageCopy(stay);
+    }
+}
+
+Animation::Animation(const std::string& path)
 {
     animFrames = 8;
-    currtAnimFrame = 0;
     frameCounter = 0;
     frameDelay = 8;
-    nextFrameDataOffset = 0;
 
-    base_image = LoadImage(path);
+    Image base_image = LoadImage(path);
 }
 
 std::string
@@ -86,49 +125,59 @@ void
 Animation::update(float dt, Entity_id parent_id, Storage &storage)
 {
     plat::Sprite *spr = storage.entities[parent_id].getComponent<Sprite>();
+    plat::Animation_control *anim_cntrl = storage.entities[parent_id].getComponent<Animation_control>();
+    plat::Physics *phys = storage.entities[parent_id].getComponent<Physics>();
+    plat::Transform *trns = storage.entities[parent_id].getComponent<Transform>();
+    plat::Player_control *plr_cntrl = storage.entities[parent_id].getComponent<Player_control>();
 
-    spr->image = ImageCopy(base_image);
-    if (frameCounter >= frameDelay)
+    const int padding = 2 * (this->base_image.width / 2 - (phys->collider.x + phys->collider.width / 2));
+
+    spr->image = ImageCopy(this->base_image);
+
+    if(plr_cntrl->is_flying)
     {
-        float x = 78 * ((frameCounter / animFrames) % animFrames);
-        float y = 0;
-        std::cout << std::endl << x << " " << y << " " << " " << base_image.width << " " << base_image.height << std::endl;
-
-        ImageCrop(&spr->image, {x, y, 58, 78});
+        if(!plr_cntrl->is_right)
+        {
+            ImageFlipHorizontal(&spr->image);
+            trns->pos.x -= padding;
+        }
     }
-    ++frameCounter;
+    else if(plr_cntrl->is_right)
+    {
+        if (frameCounter >= frameDelay)
+        {
+            float x = 78 * ((frameCounter / animFrames) % animFrames);
+            float y = 0;
+
+            ImageCrop(&spr->image, {x, y, 58, 78});
+        }
+        ++frameCounter;
+    }
+    else if(!plr_cntrl->is_right)
+    {
+        if (frameCounter >= frameDelay)
+        {
+            float x = 78 * ((frameCounter / animFrames) % animFrames);
+            float y = 0;
+            
+            ImageCrop(&spr->image, {x, y, 58, 78});
+        }
+        
+        ImageFlipHorizontal(&spr->image);
+        trns->pos.x -= 2 * (spr->image.width / 2 - (phys->collider.x + phys->collider.width / 2));
+        ++frameCounter;
+    }
+    else if(plr_cntrl->is_waiting)
+    {
+        if(!plr_cntrl->is_right)
+        {
+            ImageFlipHorizontal(&spr->image);
+            trns->pos.x -= padding;
+        }
+    }
 
     UnloadTexture(spr->texture);
     spr->texture = LoadTextureFromImage(spr->image);
-}
-
-Image
-Animation::changeImage(int &currAnimFrame, int &frameCounter, const int &frameDelay)
-{
-    Image image = ImageCopy(base_image);
-
-    if(frameCounter >= frameDelay)
-    {
-        if (currAnimFrame < animFrames)
-        {
-            currAnimFrame = 0;
-        }
-
-        float x = 58 * currAnimFrame;
-        float y = 0;
-        std::cout << std::endl << x << " " << y << " " << " " << base_image.width << " " << base_image.height << std::endl;
-
-        puts("ABOBA");
-        ImageCrop(&image, {x, y, 58, 78});
-
-        frameCounter = 0;
-        currAnimFrame++;
-    }
-    /*std::cout << std::endl << "currAnimFrame = " << currAnimFrame 
-        << " frameCounter = " << frameCounter 
-        << " frameDelay = " << frameDelay 
-        << " animFrames = " << animFrames << std::endl <<std::endl; */
-    return image;
 }
 
 std::string
@@ -179,14 +228,10 @@ Player_control::update(float dt, int parent_id, Storage &storage)
             true
         );
   
-        // if (is_right && velocity.x < - 0.1 )
-        // {
-        //     is_right = false;
-        //     UnloadTexture(cur_sprite->texture);
-        //     ImageFlipHorizontal(&cur_sprite->image);
-        //     Image image = ImageCopy(cur_sprite->image);
-        //     cur_sprite->texture = LoadTextureFromImage(image);
-        // }
+        if (is_right && velocity.x < - 0.1 )
+        {
+            is_right = false;
+        }
     }
     if (IsKeyDown(KEY_D))
     {
@@ -195,14 +240,10 @@ Player_control::update(float dt, int parent_id, Storage &storage)
             true
         );
         
-        // if (!is_right && velocity.x >= 0 )
-        // {
-        //     is_right = true;
-        //     UnloadTexture(cur_sprite->texture);
-        //     ImageFlipHorizontal(&cur_sprite->image);
-        //     Image image = ImageCopy(cur_sprite->image);
-        //     cur_sprite->texture = LoadTextureFromImage(image);
-        // }
+        if (!is_right && velocity.x >= 0 )
+        {
+            is_right = true;
+        }
     }
 }
 

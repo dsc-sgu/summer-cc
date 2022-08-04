@@ -49,8 +49,14 @@
                 "path": "Assets/Textures/King_stay.png"
             },
             {
+                "type": "Animation_control",
+                "path_stay": "Assets/Textures/King_stay.png",
+                "path_run": "Assets/Textures/King_run.png",
+                "path_fly": "Assets/Textures/King_jump.png"
+            },
+            {
                 "type": "Animation",
-                "path": "Assets/Textures/King_run.png"
+                "path": "Assets/Textures/King_stay.png"
             },
             {
                 "type": "Physics",
