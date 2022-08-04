@@ -87,8 +87,10 @@ load_lvl(std::string path)
 
                     b2FixtureDef *fixtureDef = new b2FixtureDef();
                     fixtureDef->shape = shape;
-                    fixtureDef->density = 0.15f;
-                    fixtureDef->friction = 0.6f;
+                    float dens = component["density"];
+                    float fric = component["friction"];
+                    fixtureDef->density = dens;
+                    fixtureDef->friction = fric;
                     cur_phys->body->CreateFixture(fixtureDef);
                 }
                 else // static
@@ -96,7 +98,9 @@ load_lvl(std::string path)
                     cur_phys->body = new_lvl.entities[new_lvl.cur_world].getComponent<plat::World>()->cur_world->CreateBody(&cur_phys->bodyDef);   
                     cur_phys->body->CreateFixture(shape, 0.0f);
                 }
-                cur_phys->body->SetFixedRotation(true);
+                cur_phys->body->SetTransform(cur_phys->body->GetPosition(), trans->angle * DEG2RAD);
+                if(component["rotated"] == 0)
+                    cur_phys->body->SetFixedRotation(true);
                 new_lvl.entities.back().components.push_back(cur_phys);
             }
             else if (component["type"] == "Camera")

@@ -37,7 +37,7 @@
             {
                 "type": "Transform",
                 "angle": 0,
-                "pos": [0, 0, 0],
+                "pos": [-100, 0, 0],
                 "scale": [1, 1]
             },
             {
@@ -51,7 +51,10 @@
             {
                 "type": "Physics",
                 "body": "dynamic",
-                "collider": [21, 15, 21, 28]
+                "density": 0.15,
+                "friction": 0.3,
+                "collider": [21, 15, 21, 28],
+                "rotated": 0
             }
         ],
         [
@@ -74,8 +77,8 @@
         [
             {
                 "type": "Transform",
-                "angle": 0,
-                "pos": [0, 85, 0],
+                "angle": 15,
+                "pos": [20, 45, 0],
                 "scale": [6, 1]
             },
             {
@@ -91,7 +94,7 @@
         [
             {
                 "type": "Transform",
-                "angle": 0,
+                "angle": 50,
                 "pos": [100, 85, 0],
                 "scale": [1, 1]
             },
@@ -102,7 +105,10 @@
             {
                 "type": "Physics",
                 "body": "dynamic",
-                "collider": [10, 0, 20, 15]
+                "density": 0.6,
+                "friction": 0.2,
+                "collider": [10, 0, 20, 15],
+                "rotated": 1
             }
         ]
     ]

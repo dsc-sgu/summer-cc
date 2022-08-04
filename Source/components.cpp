@@ -47,6 +47,9 @@ Transform::update(float dt, Entity_id parent_id, Storage &storage)
         new_pos.y,
         this->pos.z
     };
+
+    this->angle = - ph->body->GetAngle() * RAD2DEG;
+    std::cout << "ANGLE: " << angle << '\n';
 }
 
 Sprite::Sprite(const std::string &path)
@@ -81,7 +84,7 @@ Player_control::update(float dt, int parent_id, Storage &storage)
     //std::cout << velocity.x << '\n';
 
     b2Vec2 velocity = cur_physics->body->GetLinearVelocity();
-    std::cout << velocity.x << ' ' << velocity.y <<' '<< "Velocity" << '\n';
+    // std::cout << velocity.x << ' ' << velocity.y << ' '<< "Velocity" << '\n';
 
 
     if (is_flying && is_jumping && velocity.y < 0.1)
@@ -101,7 +104,7 @@ Player_control::update(float dt, int parent_id, Storage &storage)
         cur_physics->body->SetGravityScale(0.1f);
     if(IsKeyReleased(KEY_LEFT_SHIFT))
         cur_physics->body->SetGravityScale(1.0f);
-    if (IsKeyDown(KEY_SPACE) && is_waiting && cur_physics->body->GetLinearVelocity().y > -0.1)
+    if (IsKeyDown(KEY_SPACE) && is_waiting)
     {
         is_flying = true;
         is_waiting = false;
@@ -178,16 +181,17 @@ Player_control::update(float dt, int parent_id, Storage &storage)
         movement.y = std::max(float(speed) * speed , old_movement.y - float(speed) * speed)*32.81f;
        // movement.y = float(speed) * speed * 9.81f;
      else if (isPressed[0] < isPressed[1])
-        movement.y = - float(speed) ;
+        movement.y -= float(speed)*1.2f ;
     //movement.x*=cur_physics->body->GetMass();
     if(is_waiting) {}
     else if(is_jumping)
-         movement.y = std::max(movement.y, old_movement.y - cur_physics->body->GetMass()* 9.81f *1.33f);
+         movement.y = std::max(movement.y, old_movement.y - cur_physics->body->GetMass()* 13.33f);
     else if (is_falling)
          movement.y = std::min(movement.y, old_movement.y -cur_physics->body->GetMass()*13.33f);
     //else //if (is_waiting && is_flying)
       //  movement.y = std::min(movement.y - cur_physics->body->GetMass()*9.81f, old_movement.y);
-    std::cout << movement.x << ' ' << movement.y <<' '<< cur_physics->body->GetMass() << '\n';
+    // std::cout << movement.x << ' ' << movement.y <<' '<< cur_physics->body->GetMass() << '\n'
+
     cur_physics->body->ApplyLinearImpulseToCenter(movement, true);
     
     
