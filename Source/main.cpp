@@ -5,10 +5,7 @@
 #include "json_loader.h"
 #include "render.h"
 
-int frameCounter = 0;
-
-int
-main()
+int main()
 {
     const Vector2 screen_size { 720, 480 };
     InitWindow(screen_size.x, screen_size.y, "Creative Coding: Platformer");
@@ -29,7 +26,6 @@ main()
 
         plat::Camera *cam = storage.entities[storage.cur_camera].getComponent<plat::Camera>();
         plat::Transform *cam_t = storage.entities[storage.cur_camera].getComponent<plat::Transform>();
-        frameCounter++;
         BeginDrawing();
         ClearBackground(BLACK);
         for (int i = 0; i < draw_queue.size(); ++i)
@@ -43,20 +39,13 @@ main()
                     plat::Transform *t = draw_queue[i]->getComponent<plat::Transform>();
                     plat::Physics *ph = draw_queue[i]->getComponent<plat::Physics>();
 
-                    Vector2 screen_pos = {
-                        (t->pos.x - cam_t->pos.x) * cam->scale.x,
-                        (cam_t->pos.y - t->pos.y) * cam->scale.y
-                    };
+                    Vector2 screen_pos = {(t->pos.x - cam_t->pos.x) * cam->scale.x, (cam_t->pos.y - t->pos.y) * cam->scale.y};
                     screen_pos += screen_size * 0.5f;
                     int sprite_width = spr->image.width * t->scale.x * cam->scale.x;
                     int sprite_height = spr->image.height * t->scale.y * cam->scale.y;
-                    screen_pos -= Vector2 {
-                        (float) sprite_width,
-                        (float) sprite_height
-                    } * 0.5f;
+                    screen_pos -= Vector2 {(float) sprite_width, (float) sprite_height} * 0.5f;
 
-                    if (sprite_width != spr->texture.width
-                        || sprite_height != spr->texture.height)
+                    if (sprite_width != spr->texture.width || sprite_height != spr->texture.height)
                     {
                         UnloadTexture(spr->texture);
                         Image image = ImageCopy(spr->image);
@@ -70,21 +59,10 @@ main()
                         auto c = ph->body->GetFixtureList()->GetAABB(0).GetCenter();
                         auto a = ph->body->GetFixtureList()->GetAABB(0).lowerBound;
                         auto b = ph->body->GetFixtureList()->GetAABB(0).upperBound;
-                        Vector2 screen_pos = {
-                            (c.x - cam_t->pos.x) * cam->scale.x,
-                            (cam_t->pos.y - c.y) * cam->scale.y
-                        };
+                        Vector2 screen_pos = {(c.x - cam_t->pos.x) * cam->scale.x, (cam_t->pos.y - c.y) * cam->scale.y};
                         screen_pos += screen_size * 0.5f;
-                        screen_pos -= Vector2 {
-                            (float) (b.x - a.x) * cam->scale.x,
-                            (float) (b.y - a.y) * cam->scale.x
-                        } * 0.5f;
-                        DrawRectangleLines(
-                            screen_pos.x, screen_pos.y,
-                            (b.x - a.x + 1) * cam->scale.x,
-                            (b.y - a.y + 1) * cam->scale.y,
-                            RED
-                        );
+                        screen_pos -= Vector2 {(float) (b.x - a.x) * cam->scale.x, (float) (b.y - a.y) * cam->scale.x} * 0.5f;
+                        DrawRectangleLines(screen_pos.x, screen_pos.y, (b.x - a.x + 1) * cam->scale.x, (b.y - a.y + 1) * cam->scale.y, RED);
                     }
                 }
             }
