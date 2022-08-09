@@ -76,17 +76,38 @@ main()
                         } * 0.5f;
                         float width = b.x - a.x + 1;
                         float height = b.y - a.y + 1;
-                        DrawRectangle(ph->bodyDef.position.x, ph->bodyDef.position.y, width, height, BLUE);
-                        DrawRectanglePro({screen_pos.x, screen_pos.y, ph->collider.width * t->scale.x, ph->collider.height * t->scale.y }, {0, 0}, t->angle, {255, 0, 0, 100});
+                        // DrawRectanglePro({screen_pos.x, screen_pos.y, ph->collider.width * t->scale.x, ph->collider.height * t->scale.y }, { ph->collider.width / 2 + ph->collider.x, -ph->collider.height / 2 + ph->collider.y}, t->angle, {255, 0, 0, 100});
+                        // DrawRectanglePro();
                         // DrawRectangleLines(
                         //     screen_pos.x, screen_pos.y,
                         //     b.x - a.x + 1,
                         //     b.y - a.y + 1,
                         //     RED
                         // );
-                    }
-                   DrawTextureEx(spr->texture, screen_pos, t->angle, 1, WHITE);
-                
+                        DrawTexturePro(
+                            spr->texture,
+                            { // Source Rectangle
+                                ph->collider.x * cam->scale.x,
+                                ph->collider.y * cam->scale.y,
+                                ph->collider.width * t->scale.x * cam->scale.x,
+                                ph->collider.height * t->scale.y * cam->scale.y,
+                            },
+                            { // Destination rectangle
+                                screen_pos.x + (ph->collider.x + ph->collider.width / 2.f) * t->scale.x * cam->scale.x,
+                                screen_pos.y + (ph->collider.y + ph->collider.height / 2.f) * t->scale.y * cam->scale.y,
+                                ph->collider.width * t->scale.x * cam->scale.x,
+                                ph->collider.height * t->scale.y * cam->scale.y,
+                            },
+                            { // Origin
+                                ph->collider.width * t->scale.x * cam->scale.x / 2.f,
+                                ph->collider.height * t->scale.y * cam->scale.y / 2.f,
+                            },
+                            t->angle,
+                            WHITE
+                        );
+                     }
+                    else
+                    DrawTextureEx(spr->texture, screen_pos, t->angle, 1, WHITE);
                 }
             }
         }
