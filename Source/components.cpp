@@ -30,6 +30,9 @@ Transform::update(float dt, Entity_id parent_id, Storage &storage)
     }
 
     b2Vec2 new_pos = ph->body->GetPosition();
+    new_pos.x *= plat::METERS_TO_PIXELS;
+    new_pos.y *= plat::METERS_TO_PIXELS;
+
     new_pos += {
         spr->image.width / 2.f,
         spr->image.height / 2.f
@@ -76,36 +79,60 @@ Player_control::update(float dt, int parent_id, Storage &storage)
 {
     auto cur_physics = storage.entities[parent_id].getComponent<Physics>();
     b2Vec2 velocity = cur_physics->body->GetLinearVelocity();
-    std::cout << velocity.x << '\n';
 
-    if (!is_waiting && velocity.y < 0)
+    if (is_flying && is_jumping && velocity.y < -0.1)
     {
-        is_waiting = true;
+        is_jumping = false;
+        is_falling = true;
     }
-    else if (is_waiting && velocity.y > -0.5f)
+    else if (is_flying && is_falling && velocity.y > -0.05)
     {
         is_flying = false;
+        is_falling = false;
+        is_waiting = true;
     }
-
-    if(IsKeyPressed(KEY_LEFT_SHIFT))
+    if (IsKeyDown(KEY_RIGHT_SHIFT))
         cur_physics->body->SetGravityScale(0.1f);
-    if(IsKeyReleased(KEY_LEFT_SHIFT))
-        cur_physics->body->SetGravityScale(1.0f);
+    else
+        cur_physics->body->SetGravityScale(1.f);
 
-    if (storage.axes["jump"] && !is_flying && cur_physics->body->GetLinearVelocity().y > -0.1)
+    if (storage.axes["jump"] && is_waiting)
     {
         is_flying = true;
         is_waiting = false;
+        is_jumping = true;
         cur_physics->body->ApplyLinearImpulseToCenter(
-            b2Vec2(0, cur_physics->body->GetMass() * 5000 * dt),
+            b2Vec2(0, 350),
             true
         );
     }
 
-    float move =
-        cur_physics->body->GetMass()
-        * speed * dt * storage.axes["horizontal"];
-    cur_physics->body->ApplyLinearImpulseToCenter(b2Vec2(move, 0), true);
+    is_right = storage.axes["horizontal"] < 0;
+    const b2Vec2 &pos = cur_physics->body->GetPosition();
+    const float angle = cur_physics->body->GetAngle();
+    b2Vec2 newpos = pos;
+    newpos.x += speed * dt * storage.axes["horizontal"];
+    cur_physics->body->SetTransform(newpos, angle);
+    cur_physics->body->SetAwake(true);
+
+    if (IsKeyPressed(KEY_G) && is_waiting)
+    {
+        b2Body *cntct = cur_physics->body->GetContactList()->contact->GetFixtureB()->GetBody();
+        if (cntct->GetMass()!=0)
+            cur_physics->contact = cntct;
+        if (cur_physics->contact->GetType() == b2_dynamicBody &&
+            std::abs(cur_physics->contact->GetPosition().x - cur_physics->body->GetPosition().x) < 0.5f)
+        {
+            // std::cout << cntct->GetPosition().x<<"\n";
+            float dir = -1.f;
+            if(is_right)
+                dir = 1.f;
+            b2Vec2 movement = {100.f, 250.f};
+            movement.x *= dir;
+            cur_physics->contact->ApplyLinearImpulseToCenter(movement, true);
+            std::cout << cntct->GetLinearVelocity().x << " Mass: " << cntct->GetMass() << " Position: "<<cntct->GetPosition().y <<'\n';
+        }
+    }
 }
 
 std::string
@@ -119,13 +146,18 @@ Camera::update(float dt, Entity_id parent_id, Storage &storage)
 {
     plat::Transform *t = storage.entities[parent_id].getComponent<Transform>();
     plat::Camera *cam = storage.entities[parent_id].getComponent<Camera>();
+
+    Vector2 cam_speed = Vector2 {
+        1, 1
+    } * dt;
+
     if (IsKeyDown(KEY_LEFT))
     {
-        t->pos.x -= 1;
+        t->pos.x -= cam_speed.x;
     }
     if (IsKeyDown(KEY_RIGHT))
     {
-        t->pos.x += 1;
+        t->pos.x += cam_speed.x;
     }
     if (IsKeyDown(KEY_UP))
     {
@@ -136,7 +168,7 @@ Camera::update(float dt, Entity_id parent_id, Storage &storage)
         }
         else
         {
-            t->pos.y += 1;
+            t->pos.y += cam_speed.y;
         }
     }
     if (IsKeyDown(KEY_DOWN))
@@ -148,7 +180,7 @@ Camera::update(float dt, Entity_id parent_id, Storage &storage)
         }
         else
         {
-            t->pos.y -= 1;
+            t->pos.y -= cam_speed.y;
         }
     }
 }
