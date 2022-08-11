@@ -5,7 +5,7 @@
                 "type": "World",
                 "gravity": [0.0, -9.8],
                 "timeStep": 0.08,
-                "Velocity": 6,
+                "Velocity": 8,
                 "Position": 2
             }
         ],
@@ -42,7 +42,7 @@
             },
             {
                 "type": "PlayerControl",
-                "speed": 1.5
+                "speed": 5
             },
             {
                 "type": "Sprite",
@@ -103,7 +103,7 @@
             {
                 "type": "Physics",
                 "body": "dynamic",
-                "mass": 40,
+                "mass": 60,
                 "collider": [10, 0, 20, 15]
             }
         ]

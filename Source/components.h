@@ -83,6 +83,8 @@ public:
     float speed;
     bool is_flying = false;
     bool is_waiting = true;
+    bool is_jumping = false;
+    bool is_falling = false;
     bool is_right = true;
     void update(float dt, Entity_id parent_id, Storage &storage) override;
     std::string get_component_type() override;

@@ -80,19 +80,26 @@ Player_control::update(float dt, int parent_id, Storage &storage)
     auto cur_physics = storage.entities[parent_id].getComponent<Physics>();
     b2Vec2 velocity = cur_physics->body->GetLinearVelocity();
 
-    if (!is_waiting && velocity.y < 0)
+    if (is_flying && is_jumping && velocity.y < -0.1)
     {
-        is_waiting = true;
+        is_jumping = false;
+        is_falling = true;
     }
-    else if (is_waiting && velocity.y > -0.5f)
+    else if (is_flying && is_falling && velocity.y == 0)
     {
         is_flying = false;
+        is_falling = false;
+        is_waiting = true;
     }
-
-    if (IsKeyDown(KEY_SPACE) && !is_flying && cur_physics->body->GetLinearVelocity().y > -0.1)
+    if (IsKeyDown(KEY_RIGHT_SHIFT))
+        cur_physics->body->SetGravityScale(0.1f);
+    else
+        cur_physics->body->SetGravityScale(1.f);
+    if (IsKeyDown(KEY_SPACE) && is_waiting)
     {
         is_flying = true;
         is_waiting = false;
+        is_jumping = true;
         cur_physics->body->ApplyLinearImpulseToCenter(
             b2Vec2(0, 350),
             true
