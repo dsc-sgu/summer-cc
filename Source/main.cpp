@@ -5,6 +5,22 @@
 #include "json_loader.h"
 #include "render.h"
 
+void
+updateAxes(plat::Storage &storage)
+{
+    if (IsKeyDown(KEY_D))
+        storage.axes["horizontal"] = 1.0f;
+    else if (IsKeyDown(KEY_A))
+        storage.axes["horizontal"] = -1.0f;
+    else
+        storage.axes["horizontal"] = 0;
+
+    if (storage.axes["jump"] > 0)
+        storage.axes["jump"] = 0;
+    if (IsKeyDown(KEY_SPACE))
+        storage.axes["jump"] = 1;
+}
+
 int
 main()
 {
@@ -13,10 +29,13 @@ main()
     SetTargetFPS(60);
 
     plat::Storage storage = load_lvl("Assets/Scenes/default.json");
+    storage.axes["horizontal"] = 0;
+    storage.axes["jump"] = 0;
     std::vector<plat::Entity *> draw_queue = create_draw_order(storage.entities);
     
     while (!WindowShouldClose())
     {
+        updateAxes(storage);
         for (auto &entity : storage.entities)
         {
             for (auto &component : entity.components)

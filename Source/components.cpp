@@ -91,7 +91,8 @@ Player_control::update(float dt, int parent_id, Storage &storage)
         cur_physics->body->SetGravityScale(0.1f);
     if(IsKeyReleased(KEY_LEFT_SHIFT))
         cur_physics->body->SetGravityScale(1.0f);
-    if (IsKeyDown(KEY_SPACE) && !is_flying && cur_physics->body->GetLinearVelocity().y > -0.1)
+
+    if (storage.axes["jump"] && !is_flying && cur_physics->body->GetLinearVelocity().y > -0.1)
     {
         is_flying = true;
         is_waiting = false;
@@ -100,45 +101,11 @@ Player_control::update(float dt, int parent_id, Storage &storage)
             true
         );
     }
-    if (IsKeyDown(KEY_S))
-    {
-        cur_physics->body->ApplyLinearImpulseToCenter(
-            b2Vec2(0, -cur_physics->body->GetMass() * dt),
-            true
-        );
-    }
-    if (IsKeyDown(KEY_A))
-    {
-        cur_physics->body->ApplyLinearImpulseToCenter(
-            b2Vec2(-cur_physics->body->GetMass() * speed * dt, 0),
-            true
-        );
-  
-        // if (is_right && velocity.x < - 0.1 )
-        // {
-        //     is_right = false;
-        //     UnloadTexture(cur_sprite->texture);
-        //     ImageFlipHorizontal(&cur_sprite->image);
-        //     Image image = ImageCopy(cur_sprite->image);
-        //     cur_sprite->texture = LoadTextureFromImage(image);
-        // }
-    }
-    if (IsKeyDown(KEY_D))
-    {
-        cur_physics->body->ApplyLinearImpulseToCenter(
-            b2Vec2(cur_physics->body->GetMass() * speed * dt, 0),
-            true
-        );
-        
-        // if (!is_right && velocity.x >= 0 )
-        // {
-        //     is_right = true;
-        //     UnloadTexture(cur_sprite->texture);
-        //     ImageFlipHorizontal(&cur_sprite->image);
-        //     Image image = ImageCopy(cur_sprite->image);
-        //     cur_sprite->texture = LoadTextureFromImage(image);
-        // }
-    }
+
+    float move =
+        cur_physics->body->GetMass()
+        * speed * dt * storage.axes["horizontal"];
+    cur_physics->body->ApplyLinearImpulseToCenter(b2Vec2(move, 0), true);
 }
 
 std::string

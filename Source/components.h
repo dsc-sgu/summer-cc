@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include <string>
+#include <unordered_map>
 #include <typeinfo>
 #include <iostream>
 #include <typeindex>
@@ -18,7 +19,6 @@ class Component
 public:
     virtual void update(float dt, Entity_id parent_id, Storage &storage) = 0;
     virtual std::string get_component_type() = 0;
-   
 };
 
 class Entity 
@@ -51,6 +51,7 @@ public:
     std::vector<Entity> entities;
     plat::Entity_id cur_camera;
     plat::Entity_id cur_world;
+    std::unordered_map<std::string, float> axes;
 };
 
 class Sprite : public Component 
