@@ -42,7 +42,7 @@
             },
             {
                 "type": "PlayerControl",
-                "speed": 5
+                "speed": 1.5
             },
             {
                 "type": "Sprite",

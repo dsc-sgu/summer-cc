@@ -85,7 +85,7 @@ Player_control::update(float dt, int parent_id, Storage &storage)
         is_jumping = false;
         is_falling = true;
     }
-    else if (is_flying && is_falling && velocity.y == 0)
+    else if (is_flying && is_falling && velocity.y > -0.05)
     {
         is_flying = false;
         is_falling = false;

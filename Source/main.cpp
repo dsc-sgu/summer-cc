@@ -10,7 +10,7 @@ main()
 {
     const Vector2 screen_size { 720, 480 };
     InitWindow(screen_size.x, screen_size.y, "Creative Coding: Platformer");
-    // SetTargetFPS(60);
+    SetTargetFPS(60);
 
     plat::Storage storage = load_lvl("Assets/Scenes/default.json");
     std::vector<plat::Entity *> draw_queue = create_draw_order(storage.entities);
