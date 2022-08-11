@@ -107,7 +107,7 @@ Player_control::update(float dt, int parent_id, Storage &storage)
         );
     }
 
-    is_right = storage.axes["horizontal"] < 0;
+    is_right = storage.axes["horizontal"] > 0;
     const b2Vec2 &pos = cur_physics->body->GetPosition();
     const float angle = cur_physics->body->GetAngle();
     b2Vec2 newpos = pos;

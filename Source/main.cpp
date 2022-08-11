@@ -37,7 +37,7 @@ updateAxes(plat::Storage &storage)
 
     if (storage.axes["kick"] > 0)
         storage.axes["kick"] = 0;
-    else if (IsGamepadAvailable(0) && IsGamepadButtonDown(0, GAMEPAD_BUTTON_RIGHT_FACE_LEFT))
+    else if (IsGamepadAvailable(0) && IsGamepadButtonPressed(0, GAMEPAD_BUTTON_RIGHT_FACE_LEFT))
         storage.axes["kick"] = 1;
     else if (IsKeyPressed(KEY_G))
         storage.axes["kick"] = 1;
@@ -48,7 +48,6 @@ main()
 {
     const Vector2 screen_size { 720, 480 };
     InitWindow(screen_size.x, screen_size.y, "Creative Coding: Platformer");
-    // SetTargetFPS(60);
 
     plat::Storage storage = load_lvl("Assets/Scenes/default.json");
     storage.axes["horizontal"] = 0;
