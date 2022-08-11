@@ -95,7 +95,8 @@ Player_control::update(float dt, int parent_id, Storage &storage)
         cur_physics->body->SetGravityScale(0.1f);
     else
         cur_physics->body->SetGravityScale(1.f);
-    if (IsKeyDown(KEY_SPACE) && is_waiting)
+
+    if (storage.axes["jump"] && is_waiting)
     {
         is_flying = true;
         is_waiting = false;
@@ -105,34 +106,16 @@ Player_control::update(float dt, int parent_id, Storage &storage)
             true
         );
     }
-    if (IsKeyDown(KEY_S))
-    {
-        cur_physics->body->ApplyLinearImpulseToCenter(
-            b2Vec2(0, -cur_physics->body->GetMass() * dt),
-            true
-        );
-    }
-    if (IsKeyDown(KEY_A))
-    {
-        is_right = false;
-        const b2Vec2 &pos = cur_physics->body->GetPosition();
-        const float angle = cur_physics->body->GetAngle();
-        b2Vec2 newpos = pos;
-        newpos.x -= speed * dt;
-        cur_physics->body->SetTransform(newpos, angle);
-        cur_physics->body->SetAwake(true);
-    }
-    if (IsKeyDown(KEY_D))
-    {
-        is_right = true;
-        const b2Vec2 &pos = cur_physics->body->GetPosition();
-        const float angle = cur_physics->body->GetAngle();
-        b2Vec2 newpos = pos;
-        newpos.x += speed * dt;
-        cur_physics->body->SetTransform(newpos, angle);
-        cur_physics->body->SetAwake(true);
-    }
-    if (IsKeyPressed(KEY_G) && is_waiting)
+
+    is_right = storage.axes["horizontal"] > 0;
+    const b2Vec2 &pos = cur_physics->body->GetPosition();
+    const float angle = cur_physics->body->GetAngle();
+    b2Vec2 newpos = pos;
+    newpos.x += speed * dt * storage.axes["horizontal"];
+    cur_physics->body->SetTransform(newpos, angle);
+    cur_physics->body->SetAwake(true);
+
+    if (storage.axes["kick"] > 0 && is_waiting)
     {
         b2Body *cntct = cur_physics->body->GetContactList()->contact->GetFixtureB()->GetBody();
         if (cntct->GetMass()!=0)
@@ -164,6 +147,16 @@ Camera::update(float dt, Entity_id parent_id, Storage &storage)
     plat::Transform *t = storage.entities[parent_id].getComponent<Transform>();
     plat::Camera *cam = storage.entities[parent_id].getComponent<Camera>();
 
+#if 1
+    Vector2 cam_speed = Vector2 {
+        storage.axes["cam_x"],
+        storage.axes["cam_y"],
+    } * dt;
+
+    t->pos.x += cam_speed.x;
+    t->pos.y -= cam_speed.y;
+#endif
+#if 0
     Vector2 cam_speed = Vector2 {
         1, 1
     } * dt;
@@ -200,6 +193,7 @@ Camera::update(float dt, Entity_id parent_id, Storage &storage)
             t->pos.y -= cam_speed.y;
         }
     }
+#endif
 }
 
 std::string
