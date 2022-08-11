@@ -12,8 +12,6 @@ namespace plat
 {
     typedef int Entity_id;
 
-    template<class Key, class T, class Hash = std::hash<Key>, class KeyEqual = std::equal_to<Key>, class Allocator = std::allocator< std::pair<const Key, T> >> class unordered_map;
-
     class Storage;
 
     class Component 
@@ -86,7 +84,14 @@ namespace plat
 
         std::unordered_map <std::string, anim> anims; // массив для хранения анимаций
 
-        Animation_control(const std::string& path_stay, const int& frame_stay, const float anim_delay_stay, const std::string& path_run, const int& frame_run, const float anim_delay_run, const std::string& path_attack, const int& frame_attack, const float anim_delay_attack, const std::string path_hit, const int& frame_hit, const float anim_delay_hit, const std::string path_dead, const int& frame_dead, const float anim_delay_dead);
+        std::string curent_animation = "STAY";
+
+        Animation_control(
+            const std::string& path_stay, const int& frame_stay, const float anim_delay_stay, 
+            const std::string& path_run, const int& frame_run, const float anim_delay_run, 
+            const std::string& path_attack, const int& frame_attack, const float anim_delay_attack,
+            const std::string path_hit, const int& frame_hit, const float anim_delay_hit,
+            const std::string path_dead, const int& frame_dead, const float anim_delay_dead);
         std::string get_component_type() override;
         void update(float dt, Entity_id parent_id, Storage &storage) override;
     };

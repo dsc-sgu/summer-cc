@@ -85,7 +85,13 @@ load_lvl(std::string path)
             }
             else if(component["type"] == "Animation_control")
             {
-                new_lvl.entities.back().components.push_back(new plat::Animation_control(std::string(component["path_stay"]), int(component["frame_stay"]), float(component["anim_delay_stay"]), std::string(component["path_run"]), int(component["frame_run"]), float(component["anim_delay_run"]), std::string(component["path_attack"]), int(component["frame_attack"]), float(component["anim_delay_attack"]), std::string(component["path_hit"]), int(component["frame_hit"]), float(component["anim_delay_hit"]), std::string(component["path_dead"]), int(component["frame_dead"]), float(component["anim_delay_dead"])));
+                new_lvl.entities.back().components.push_back(new plat::Animation_control(
+                    std::string(component["path_stay"]), int(component["frame_stay"]), float(component["anim_delay_stay"]), 
+                    std::string(component["path_run"]), int(component["frame_run"]), float(component["anim_delay_run"]), 
+                    std::string(component["path_attack"]), int(component["frame_attack"]), float(component["anim_delay_attack"]), 
+                    std::string(component["path_hit"]), int(component["frame_hit"]), float(component["anim_delay_hit"]), 
+                    std::string(component["path_dead"]), int(component["frame_dead"]), float(component["anim_delay_dead"])
+                ));
             }
             else if(component["type"] == "Animation")
             {

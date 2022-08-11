@@ -19,8 +19,19 @@ namespace plat
         Image base_image = LoadImage(path); // скорее всего надо будет переделать
     }
 
-    Animation_control::Animation_control(const std::string& path_stay, const int& frame_stay, const float anim_delay_stay, const std::string& path_run, const int& frame_run, const float anim_delay_run, const std::string& path_attack, const int& frame_attack, const float anim_delay_attack, const std::string path_hit, const int& frame_hit, const float anim_delay_hit, const std::string path_dead, const int& frame_dead, const float anim_delay_dead)
-    {}
+    Animation_control::Animation_control(
+        const std::string& path_stay, const int& frame_stay, const float anim_delay_stay, 
+        const std::string& path_run, const int& frame_run, const float anim_delay_run, 
+        const std::string& path_attack, const int& frame_attack, const float anim_delay_attack, 
+        const std::string path_hit, const int& frame_hit, const float anim_delay_hit, 
+        const std::string path_dead, const int& frame_dead, const float anim_delay_dead)
+    {
+        anims["STAY"].path = path_stay; anims["STAY"].frames = frame_stay; anims["STAY"].anim_delay = anim_delay_stay;
+        anims["RUN"].path = path_run; anims["RUN"].frames = frame_run; anims["RUN"].anim_delay = anim_delay_run;
+        anims["ATTACK"].path = path_attack; anims["ATTACK"].frames = frame_attack; anims["ATTACK"].anim_delay = anim_delay_attack;
+        anims["HIT"].path = path_hit; anims["HIT"].frames = frame_hit; anims["HIT"].anim_delay = anim_delay_hit;
+        anims["DEAD"].path = path_dead; anims["DEAD"].frames = frame_dead; anims["DEAD"].anim_delay = anim_delay_dead;
+    }
 
     World::World(b2Vec2 gravity, float timestep, int32 vel_it, int32 pos_it)
     {
@@ -31,7 +42,7 @@ namespace plat
         cur_world = world; 
     }
 
-//-----------------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // функции типа get_component_type()
 
     std::string Transform::get_component_type()
@@ -74,7 +85,7 @@ namespace plat
         return std::type_index(typeid(World)).name();
     }
 
-//-----------------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // функции типа update()
 
     void Transform::update(float dt, Entity_id parent_id, Storage &storage)
@@ -101,14 +112,6 @@ namespace plat
 
         // Если ничего не происходит(ничего не нажато), то персонаж ничего не делает(анимация поумолчанию)
         if (!is_waiting && velocity.y < 0)  is_waiting = true;
-
-        // прыжок пока идёт нах
-        /*if (IsKeyDown(KEY_SPACE) && !... && cur_physics->body->GetLinearVelocity().y > -0.1) // Если нажать пробел он прыгнет
-        {
-            is_waiting = false;
-
-            cur_physics->body->ApplyLinearImpulseToCenter(b2Vec2(0, cur_physics->body->GetMass() * 5000 * dt), true);
-        }*/
 
         // Если нажать A, то персонаж пойдёт налево)
         if (IsKeyDown(KEY_A))
@@ -140,26 +143,15 @@ namespace plat
         const int padding = 2 * (this->base_image.width / 2 - (phys->collider.x + phys->collider.width / 2)); // что это?
 
         spr->image = ImageCopy(this->base_image); //
+        std::string curent_anim_key = anim_cntrl->curent_animation; // 
 
         int frameCounter = 0; // счётчик кадров анимации
 
-
-        // что это?
-        // что оно делает?
-        /*
-        // Если персонаж находится в прыжке(полёте) и не смотрит направо, то текстурка инвертируется погоризонтали и... что-то ещё
-        // прыжок всё ешё идёт нах
-        if((plr_cntrl->is_flying) & (!plr_cntrl->is_right))
-        {
-            ImageFlipHorizontal(&spr->image);
-            trns->pos.x -= padding;
-        }
-        else*/ 
         if(plr_cntrl->is_right) 
         {
-            if (frameCounter >= anim_cntrl.anims[/*надо как-то получить имя анимации*/].anim_delay) // Если счётчик кадров больше чем кадров в анимации то цикл начинается заного
+            if (frameCounter >= anim_cntrl->anims[curent_anim_key].anim_delay) // Если счётчик кадров больше чем кадров в анимации то цикл начинается заного
             {
-                float x = 78 * ((frameCounter / anim_cntrl.anims[/*надо как-то получить имя анимации*/].frames) % anim_cntrl.anims[/*надо как-то получить имя анимации*/].frames);
+                float x = 78 * ((frameCounter / anim_cntrl->anims[curent_anim_key].frames) % anim_cntrl->anims[curent_anim_key].frames);
                 float y = 0;
 
                 ImageCrop(&spr->image, {x, y, 78, 58});
@@ -169,9 +161,9 @@ namespace plat
         }
         else if(!plr_cntrl->is_right) // Если персонаж не смотрит направо
         {
-            if (frameCounter >= anim_cntrl.anims[/*надо как-то получить имя анимации*/].frames) // Если счётчик кадров больше чем кадров в анимации то цикл начинается заного
+            if (frameCounter >= anim_cntrl->anims[curent_anim_key].frames) // Если счётчик кадров больше чем кадров в анимации то цикл начинается заного
             {
-                float x = 78 * ((frameCounter / anim_cntrl.anims[/*надо как-то получить имя анимации*/].frames) % anim_cntrl.anims[/*надо как-то получить имя анимации*/].frames);
+                float x = 78 * ((frameCounter / anim_cntrl->anims[curent_anim_key].frames) % anim_cntrl->anims[curent_anim_key].frames);
                 float y = 0;
                 
                 ImageCrop(&spr->image, {x, y, 78, 58});
@@ -196,19 +188,20 @@ namespace plat
         plat::Animation *anim = storage.entities[parent_id].getComponent<Animation>();
         plat::Player_control *plr_cntrl = storage.entities[parent_id].getComponent<Player_control>();
 
-
-        // прыжок идёт нах
         if(plr_cntrl->is_right) //
         {
-            anim->base_image = ImageCopy(anims["RUN"].path);
+            anim->base_image = LoadImage(anims["RUN"].path);
+            curent_animation = "RUN";
         }
         else if(!plr_cntrl->is_right) //
         {
-            anim->base_image = ImageCopy(anims["RUN"].path);
+            anim->base_image = LoadImage(anims["RUN"].path);
+            curent_animation = "RUN";
         }
         else if(plr_cntrl->is_waiting) // анимация по умолчанию
         {
-            anim->base_image = ImageCopy(anims["STAY"].path);
+            anim->base_image = LoadImage(anims["STAY"].path);
+            curent_animation = "STAY";
         }
     }
 
@@ -239,6 +232,9 @@ namespace plat
             else t->pos.y -= 1;
         }
     }
+
+    void Physics::update(float dt, Entity_id parent_id, Storage &storage)
+    {}
 
     void World::update(float dt, Entity_id parent_id, Storage &storage)
     {
