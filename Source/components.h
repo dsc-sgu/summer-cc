@@ -4,12 +4,15 @@
 #include <typeinfo>
 #include <iostream>
 #include <typeindex>
-#include <raylib-ext.hpp>
+#include <unordered_map>
 #include <box2d/box2d.h>
+#include <raylib-ext.hpp>
 
 namespace plat
 {
     typedef int Entity_id;
+
+    template<class Key, class T, class Hash = std::hash<Key>, class KeyEqual = std::equal_to<Key>, class Allocator = std::allocator< std::pair<const Key, T> >> class unordered_map;
 
     class Storage;
 
@@ -18,7 +21,6 @@ namespace plat
     public:
         virtual void update(float dt, Entity_id parent_id, Storage &storage) = 0;
         virtual std::string get_component_type() = 0;
-    
     };
 
     class Entity 
@@ -29,9 +31,7 @@ namespace plat
 
         Entity();
 
-        template <typename T> 
-        T *
-        getComponent()
+        template <typename T> T * getComponent()
         {
             for (int i = 0; i < components.size(); i++)
             {
@@ -64,6 +64,33 @@ namespace plat
         void update(float dt, Entity_id parent_id, Storage &storage) override;
     };
 
+    class Animation : public Component 
+    {
+    public:
+        Image base_image; // картинка заданная по умолчанию?
+
+        Animation(const std::string& path);
+        std::string get_component_type() override;
+        void update(float dt, Entity_id parent_id, Storage &storage) override;
+    };
+
+    class Animation_control : public Component
+    {
+    public:
+        struct anim
+        {
+            std::string path; // Путь к текстурке
+            int frames; // Количество кадров в анимации
+            float anim_delay; // скорость проигрывания анимации
+        };
+
+        std::unordered_map <std::string, anim> anims; // массив для хранения анимаций
+
+        Animation_control(const std::string& path_stay, const int& frame_stay, const float anim_delay_stay, const std::string& path_run, const int& frame_run, const float anim_delay_run, const std::string& path_attack, const int& frame_attack, const float anim_delay_attack, const std::string path_hit, const int& frame_hit, const float anim_delay_hit, const std::string path_dead, const int& frame_dead, const float anim_delay_dead);
+        std::string get_component_type() override;
+        void update(float dt, Entity_id parent_id, Storage &storage) override;
+    };
+
     class Transform : public Component 
     {
     public:
@@ -78,10 +105,9 @@ namespace plat
     class Player_control : public Component 
     {
     public:
-        int speed;
-        //bool is_flying = false;
-        bool is_waiting = true;
-        bool is_right = true;
+        int speed; // скорость перемещения персонажа (задана в json)
+        bool is_waiting = true; // поумолчанию персонаж ничего не делает и находится в режиме ожидания
+        bool is_right = true; // поумолчанию пероснаж смотрит напрво (хотя это наверное лучше задать в json, тк на разных уровнях стартовая позиция может отличаться)
         void update(float dt, Entity_id parent_id, Storage &storage) override;
         std::string get_component_type() override;
     };

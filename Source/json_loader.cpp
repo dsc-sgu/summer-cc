@@ -72,6 +72,7 @@ load_lvl(std::string path)
                     cur_phys->body = new_lvl.entities[new_lvl.cur_world].getComponent<plat::World>()->cur_world->CreateBody(&cur_phys->bodyDef);   
                     cur_phys->body->CreateFixture(shape, 0.0f);
                 }
+                
                 cur_phys->body->SetFixedRotation(true);
                 new_lvl.entities.back().components.push_back(cur_phys);
             }
@@ -84,7 +85,7 @@ load_lvl(std::string path)
             }
             else if(component["type"] == "Animation_control")
             {
-                new_lvl.entities.back().components.push_back(new plat::Animation_control(std::string(component["path_stay"]), int(component["frame_stay"]), std::string(component["path_run"]), int(component["frame_run"]), std::string(component["path_attack"]), int(component["frame_attack"]), std::string(component["path_hit"]), int(component["frame_hit"]), std::string(component["path_dead"]), int(component["frame_dead"])));
+                new_lvl.entities.back().components.push_back(new plat::Animation_control(std::string(component["path_stay"]), int(component["frame_stay"]), float(component["anim_delay_stay"]), std::string(component["path_run"]), int(component["frame_run"]), float(component["anim_delay_run"]), std::string(component["path_attack"]), int(component["frame_attack"]), float(component["anim_delay_attack"]), std::string(component["path_hit"]), int(component["frame_hit"]), float(component["anim_delay_hit"]), std::string(component["path_dead"]), int(component["frame_dead"]), float(component["anim_delay_dead"])));
             }
             else if(component["type"] == "Animation")
             {

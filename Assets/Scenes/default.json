@@ -54,14 +54,14 @@
             },
             {
                 "type": "Animation_control",
-                "path_stay": "Assets/Textures/King_Idle.png", "frame_stay": 11,
-                "path_run": "Assets/Textures/King_Run.png", "frame_run": 8,
-                "path_jump_1": "Assets/Textures/King_Jump.png",
-                "path_jump_2": "Assets/Textures/King_Fall.png",
-                "path_jump_3": "Assets/Textures/King_Ground.png",
-                "path_attack": "Assets/Textures/King_Attack.png", "frame_attack": 3,
-                "path_hit": "Assets/Textures/King_Hit.png", "frame_hit": 2,
-                "path_dead": "Assets/Textures/King_Dead.png", "frame_dead": 4
+                "path_stay": "Assets/Textures/King_Idle.png", "frame_stay": 11, "anim_delay_stay": 1,
+                "path_run": "Assets/Textures/King_Run.png", "frame_run": 8, "anim_delay_run": 1,
+                "path_jump_1": "Assets/Textures/King_Jump.png", 
+                "path_jump_2": "Assets/Textures/King_Fall.png", 
+                "path_jump_3": "Assets/Textures/King_Ground.png", 
+                "path_attack": "Assets/Textures/King_Attack.png", "frame_attack": 3, "anim_delay_attack": 1,
+                "path_hit": "Assets/Textures/King_Hit.png", "frame_hit": 2, "anim_delay_hit": 1,
+                "path_dead": "Assets/Textures/King_Dead.png", "frame_dead": 4, "anim_delay_dead": 1
             },
             {
                 "type": "Physics",

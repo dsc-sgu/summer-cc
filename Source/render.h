@@ -3,15 +3,13 @@
 #include "components.h"
 #include<algorithm>
 
-namespace plat {
-
-struct Viewport
+namespace plat
 {
-    float left, right;
-    float bottom, top;
-};
+    struct Viewport
+    {
+        float left, right;
+        float bottom, top;
+    };
 
-std::vector<Entity *>
-create_draw_order(std::vector<Entity> &entities);
-
+    std::vector<Entity *> create_draw_order(std::vector<Entity> &entities);
 }

@@ -2,12 +2,13 @@
 #include <raylib-ext.hpp>
 #include <iostream>
 #include <algorithm>
-#include "json_loader.h"
 #include "render.h"
+#include "components.h"
+#include "json_loader.h"
 
 int main()
 {
-    const Vector2 screen_size { 720, 480 };
+    const Vector2 screen_size {720, 480};
     InitWindow(screen_size.x, screen_size.y, "Creative Coding: Platformer");
     SetTargetFPS(60);
 
