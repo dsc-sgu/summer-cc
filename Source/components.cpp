@@ -130,6 +130,15 @@ Player_control::update(float dt, int parent_id, Storage &storage)
         cur_physics->body->SetTransform(newpos, angle);
         cur_physics->body->SetAwake(true);
     }
+    if (IsKeyPressed(KEY_G) && is_waiting)
+    {
+        b2Body *cntct = cur_physics->body->GetContactList()->contact->GetFixtureB()->GetBody();
+        // std::cout << cntct->GetPosition().x<<"\n";
+        float dir = 1.f;
+        if(cntct->GetPosition().x - cur_physics->body->GetPosition().x < -0.05)
+            dir-=2;
+        cntct->ApplyLinearImpulseToCenter({50.f * dir, 80.f}, true);
+    }
 }
 
 std::string
