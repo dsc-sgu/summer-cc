@@ -11,6 +11,8 @@ namespace plat {
 
 typedef int Entity_id;
 
+const float METERS_TO_PIXELS = 100;
+
 class Storage;
 
 class Component 
@@ -78,9 +80,11 @@ public:
 class Player_control : public Component 
 {
 public:
-    int speed;
+    float speed;
     bool is_flying = false;
     bool is_waiting = true;
+    bool is_jumping = false;
+    bool is_falling = false;
     bool is_right = true;
     void update(float dt, Entity_id parent_id, Storage &storage) override;
     std::string get_component_type() override;
@@ -101,7 +105,7 @@ public:
     b2BodyDef bodyDef;
     b2Body * body;
     Rectangle collider;
-
+    b2Body * contact;
     void update(float dt, Entity_id parent_id, Storage &storage) override;
     std::string get_component_type() override;
 };
