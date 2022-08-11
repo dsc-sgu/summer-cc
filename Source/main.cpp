@@ -8,7 +8,11 @@
 void
 updateAxes(plat::Storage &storage)
 {
-    if (IsKeyDown(KEY_D))
+
+    if (IsGamepadAvailable(0))
+        storage.axes["horizontal"] =
+            GetGamepadAxisMovement(0, GAMEPAD_AXIS_LEFT_X);
+    else if (IsKeyDown(KEY_D))
         storage.axes["horizontal"] = 1.0f;
     else if (IsKeyDown(KEY_A))
         storage.axes["horizontal"] = -1.0f;
