@@ -105,7 +105,7 @@ public:
     b2BodyDef bodyDef;
     b2Body * body;
     Rectangle collider;
-
+    b2Body * contact;
     void update(float dt, Entity_id parent_id, Storage &storage) override;
     std::string get_component_type() override;
 };

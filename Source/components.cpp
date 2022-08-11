@@ -114,6 +114,7 @@ Player_control::update(float dt, int parent_id, Storage &storage)
     }
     if (IsKeyDown(KEY_A))
     {
+        is_right = false;
         const b2Vec2 &pos = cur_physics->body->GetPosition();
         const float angle = cur_physics->body->GetAngle();
         b2Vec2 newpos = pos;
@@ -123,6 +124,7 @@ Player_control::update(float dt, int parent_id, Storage &storage)
     }
     if (IsKeyDown(KEY_D))
     {
+        is_right = true;
         const b2Vec2 &pos = cur_physics->body->GetPosition();
         const float angle = cur_physics->body->GetAngle();
         b2Vec2 newpos = pos;
@@ -133,11 +135,20 @@ Player_control::update(float dt, int parent_id, Storage &storage)
     if (IsKeyPressed(KEY_G) && is_waiting)
     {
         b2Body *cntct = cur_physics->body->GetContactList()->contact->GetFixtureB()->GetBody();
-        // std::cout << cntct->GetPosition().x<<"\n";
-        float dir = 1.f;
-        if(cntct->GetPosition().x - cur_physics->body->GetPosition().x < -0.05)
-            dir-=2;
-        cntct->ApplyLinearImpulseToCenter({50.f * dir, 80.f}, true);
+        if (cntct->GetMass()!=0)
+            cur_physics->contact = cntct;
+        if (cur_physics->contact->GetType() == b2_dynamicBody &&
+            std::abs(cur_physics->contact->GetPosition().x - cur_physics->body->GetPosition().x) < 0.5f)
+        {
+            // std::cout << cntct->GetPosition().x<<"\n";
+            float dir = -1.f;
+            if(is_right)
+                dir = 1.f;
+            b2Vec2 movement = {100.f, 250.f};
+            movement.x *= dir;
+            cur_physics->contact->ApplyLinearImpulseToCenter(movement, true);
+            std::cout << cntct->GetLinearVelocity().x << " Mass: " << cntct->GetMass() << " Position: "<<cntct->GetPosition().y <<'\n';
+        }
     }
 }
 
