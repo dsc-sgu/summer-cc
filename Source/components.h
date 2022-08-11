@@ -11,6 +11,8 @@ namespace plat {
 
 typedef int Entity_id;
 
+const float METERS_TO_PIXELS = 100;
+
 class Storage;
 
 class Component 
@@ -78,7 +80,7 @@ public:
 class Player_control : public Component 
 {
 public:
-    int speed;
+    float speed;
     bool is_flying = false;
     bool is_waiting = true;
     bool is_right = true;

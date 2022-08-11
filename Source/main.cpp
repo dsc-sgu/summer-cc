@@ -41,8 +41,8 @@ main()
                     plat::Physics *ph = draw_queue[i]->getComponent<plat::Physics>();
 
                     Vector2 screen_pos = {
-                        (t->pos.x - cam_t->pos.x) * cam->scale.x,
-                        (cam_t->pos.y - t->pos.y) * cam->scale.y
+                        (t->pos.x - cam_t->pos.x * plat::METERS_TO_PIXELS) * cam->scale.x,
+                        (cam_t->pos.y * plat::METERS_TO_PIXELS - t->pos.y) * cam->scale.y
                     };
                     screen_pos += screen_size * 0.5f;
                     int sprite_width = spr->image.width * t->scale.x * cam->scale.x;
@@ -62,24 +62,30 @@ main()
                     }
 
                     DrawTextureV(spr->texture, screen_pos, WHITE);
+
+                    // NOTE (mchernigin): Отрисовка коллайдеров
                     if (ph)
                     {
                         auto c = ph->body->GetFixtureList()->GetAABB(0).GetCenter();
                         auto a = ph->body->GetFixtureList()->GetAABB(0).lowerBound;
                         auto b = ph->body->GetFixtureList()->GetAABB(0).upperBound;
-                        Vector2 screen_pos = {
-                            (c.x - cam_t->pos.x) * cam->scale.x,
-                            (cam_t->pos.y - c.y) * cam->scale.y
+                        c *= plat::METERS_TO_PIXELS;
+                        a *= plat::METERS_TO_PIXELS;
+                        b *= plat::METERS_TO_PIXELS;
+                        Vector2 screen_pos = Vector2 {
+                            (c.x - cam_t->pos.x * plat::METERS_TO_PIXELS) * cam->scale.x,
+                            (cam_t->pos.y * plat::METERS_TO_PIXELS - c.y) * cam->scale.y
                         };
                         screen_pos += screen_size * 0.5f;
                         screen_pos -= Vector2 {
-                            (float) b.x - a.x,
-                            (float) b.y - a.y
+                            (float) (b.x - a.x) * cam->scale.x,
+                            (float) (b.y - a.y) * cam->scale.y
                         } * 0.5f;
                         DrawRectangleLines(
-                            screen_pos.x, screen_pos.y,
-                            b.x - a.x + 1,
-                            b.y - a.y + 1,
+                            screen_pos.x,
+                            screen_pos.y,
+                            (b.x - a.x + 1) * cam->scale.x,
+                            (b.y - a.y + 1) * cam->scale.y,
                             RED
                         );
                     }
