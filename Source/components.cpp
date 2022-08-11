@@ -115,7 +115,7 @@ Player_control::update(float dt, int parent_id, Storage &storage)
     cur_physics->body->SetTransform(newpos, angle);
     cur_physics->body->SetAwake(true);
 
-    if (IsKeyPressed(KEY_G) && is_waiting)
+    if (storage.axes["kick"] > 0 && is_waiting)
     {
         b2Body *cntct = cur_physics->body->GetContactList()->contact->GetFixtureB()->GetBody();
         if (cntct->GetMass()!=0)
@@ -147,6 +147,16 @@ Camera::update(float dt, Entity_id parent_id, Storage &storage)
     plat::Transform *t = storage.entities[parent_id].getComponent<Transform>();
     plat::Camera *cam = storage.entities[parent_id].getComponent<Camera>();
 
+#if 1
+    Vector2 cam_speed = Vector2 {
+        storage.axes["cam_x"],
+        storage.axes["cam_y"],
+    } * dt;
+
+    t->pos.x += cam_speed.x;
+    t->pos.y -= cam_speed.y;
+#endif
+#if 0
     Vector2 cam_speed = Vector2 {
         1, 1
     } * dt;
@@ -183,6 +193,7 @@ Camera::update(float dt, Entity_id parent_id, Storage &storage)
             t->pos.y -= cam_speed.y;
         }
     }
+#endif
 }
 
 std::string

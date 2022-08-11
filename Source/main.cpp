@@ -18,11 +18,29 @@ updateAxes(plat::Storage &storage)
         storage.axes["horizontal"] = -1.0f;
     else
         storage.axes["horizontal"] = 0;
+    
+    
+    if (IsGamepadAvailable(0))
+    {
+        storage.axes["cam_x"] =
+            GetGamepadAxisMovement(0, GAMEPAD_AXIS_RIGHT_X);
+        storage.axes["cam_y"] =
+            GetGamepadAxisMovement(0, GAMEPAD_AXIS_RIGHT_Y);
+    }
 
     if (storage.axes["jump"] > 0)
         storage.axes["jump"] = 0;
-    if (IsKeyDown(KEY_SPACE))
+    else if (IsGamepadAvailable(0) && IsGamepadButtonDown(0, GAMEPAD_BUTTON_RIGHT_FACE_DOWN))
         storage.axes["jump"] = 1;
+    else if (IsKeyDown(KEY_SPACE))
+        storage.axes["jump"] = 1;
+
+    if (storage.axes["kick"] > 0)
+        storage.axes["kick"] = 0;
+    else if (IsGamepadAvailable(0) && IsGamepadButtonDown(0, GAMEPAD_BUTTON_RIGHT_FACE_LEFT))
+        storage.axes["kick"] = 1;
+    else if (IsKeyPressed(KEY_G))
+        storage.axes["kick"] = 1;
 }
 
 int
@@ -30,11 +48,12 @@ main()
 {
     const Vector2 screen_size { 720, 480 };
     InitWindow(screen_size.x, screen_size.y, "Creative Coding: Platformer");
-    SetTargetFPS(60);
+    // SetTargetFPS(60);
 
     plat::Storage storage = load_lvl("Assets/Scenes/default.json");
     storage.axes["horizontal"] = 0;
     storage.axes["jump"] = 0;
+    storage.axes["kick"] = 0;
     std::vector<plat::Entity *> draw_queue = create_draw_order(storage.entities);
     
     while (!WindowShouldClose())
